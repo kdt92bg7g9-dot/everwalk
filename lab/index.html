@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="robots" content="noindex,nofollow"><title>Everwalk Lab</title>
+<style>
+*{box-sizing:border-box}html,body{margin:0;height:100%;overflow:hidden;background:#20284f;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:#fff;touch-action:none}
+canvas{display:block;width:100%;height:100%}
+#hud{position:fixed;left:12px;top:calc(10px + env(safe-area-inset-top));font-size:12px;line-height:1.5;background:rgba(20,26,60,.55);padding:6px 10px;border-radius:10px}
+#open{position:fixed;right:12px;top:calc(10px + env(safe-area-inset-top));min-height:40px;padding:0 14px;border-radius:99px;border:0;background:#fff;color:#3c54a8;font-weight:700;font-size:14px}
+#panel{position:fixed;right:0;top:0;bottom:0;width:min(320px,86vw);background:rgba(255,255,255,.96);color:#262b4d;padding:calc(14px + env(safe-area-inset-top)) 16px 20px;overflow:auto;transform:translateX(105%);transition:transform .25s;touch-action:pan-y}
+#panel.on{transform:none}#panel h2{font-size:15px;margin:0 0 10px;display:flex;justify-content:space-between;align-items:center}
+#panel label{display:block;font-size:12.5px;font-weight:600;margin:12px 0 4px;color:#555a82}#panel input[type=range]{width:100%}
+.ch{display:flex;flex-wrap:wrap;gap:6px}.ch button{min-height:36px;padding:0 12px;border-radius:99px;border:1px solid #cdd2ee;background:#fff;color:#262b4d;font-size:13px}.ch button[aria-pressed=true]{background:#4a60b4;color:#fff;border-color:#4a60b4}
+.sw{width:34px;padding:0!important;border-radius:50%!important}
+#x{border:0;background:none;font-size:15px;color:#4a60b4;font-weight:700}
+#joy{position:fixed;left:22px;bottom:calc(26px + env(safe-area-inset-bottom));width:120px;height:120px;border-radius:50%;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.4)}#joy i{position:absolute;left:50%;top:50%;width:52px;height:52px;margin:-26px;border-radius:50%;background:rgba(255,255,255,.85)}
+#acts{position:fixed;right:16px;bottom:calc(30px + env(safe-area-inset-bottom));display:flex;gap:10px}#acts button{min-width:64px;min-height:48px;border-radius:99px;border:0;background:rgba(255,255,255,.9);color:#3c54a8;font-weight:700;font-size:14px}
+</style>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
+</head><body>
+<div id="hud">Everwalk Lab · test build<br><span id="fps"></span></div>
+<button id="open" type="button">Shape</button>
+<div id="joy"><i></i></div>
+<div id="acts"><button id="sit" type="button">Sit</button></div>
+<div id="panel"><h2>Shape your pet <button id="x" type="button">Close</button></h2>
+<label>Body length</label><input type="range" data-k="len" min=".75" max="1.4" step=".01">
+<label>Body girth</label><input type="range" data-k="girth" min=".75" max="1.35" step=".01">
+<label>Leg length</label><input type="range" data-k="leg" min=".55" max="1.4" step=".01">
+<label>Head size</label><input type="range" data-k="head" min=".8" max="1.3" step=".01">
+<label>Muzzle length</label><input type="range" data-k="muzzle" min=".45" max="1.5" step=".01">
+<label>Ears</label><div class="ch" data-c="ear"><button data-v="prick">Upright</button><button data-v="fold">Folded</button><button data-v="drop">Drop</button></div>
+<label>Tail</label><div class="ch" data-c="tail"><button data-v="curl">Curled</button><button data-v="long">Long</button><button data-v="short">Short</button></div>
+<label>Fur length</label><input type="range" data-k="fur" min=".15" max="1.6" step=".01">
+<label>Fur color</label><div class="ch" data-c="color"><button class="sw" data-v="#fbf8f2" style="background:#fbf8f2"></button><button class="sw" data-v="#f1dcb4" style="background:#f1dcb4"></button><button class="sw" data-v="#c98f55" style="background:#c98f55"></button><button class="sw" data-v="#7a4f34" style="background:#7a4f34"></button><button class="sw" data-v="#8f8f97" style="background:#8f8f97"></button><button class="sw" data-v="#2c2a2e" style="background:#2c2a2e"></button></div>
+<label>Graphics</label><div class="ch" data-c="q"><button data-v="auto">Auto</button><button data-v="low">Low</button><button data-v="mid">Medium</button><button data-v="high">High</button></div>
+</div>
+<script type="module">
+import * as THREE from 'three';
+import { MarchingCubes } from 'three/addons/objects/MarchingCubes.js';
+const $ = s => document.querySelector(s), QS = new URLSearchParams(location.search);
+const P = { len: 1, girth: 1, leg: 1, head: 1, muzzle: 1, ear: 'prick', tail: 'curl', fur: 1, color: '#fbf8f2', q: QS.get('q') || 'auto' };
+const TIER = { low: { lay: 8, grass: 9000, res: 56, dpr: 1, sh: false }, mid: { lay: 14, grass: 26000, res: 72, dpr: 1.5, sh: true }, high: { lay: 28, grass: 70000, res: 96, dpr: 2, sh: true } };
+let tierName = P.q === 'auto' ? ((navigator.hardwareConcurrency || 4) >= 8 && !/Android|iPhone|iPad/i.test(navigator.userAgent) ? 'high' : 'mid') : P.q, T = TIER[tierName];
+const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance', preserveDrawingBuffer: !!QS.get('shot') });
+renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = .82; renderer.shadowMap.type = THREE.PCFSoftShadowMap; document.body.prepend(renderer.domElement);
+const scene = new THREE.Scene(); scene.fog = new THREE.FogExp2(0xe6b79c, .012);
+const cam = new THREE.PerspectiveCamera(34, 1, .05, 300);
+const SUN = new THREE.Vector3(.35, .28, -.9).normalize(), SUNC = new THREE.Color(1, .76, .5);
+let seed = 11; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647, R = (a, b) => a + (b - a) * rnd();
+const skyMat = new THREE.ShaderMaterial({ side: THREE.BackSide, depthWrite: false, fog: false, uniforms: { sun: { value: SUN } },
+  vertexShader: 'varying vec3 d; void main(){ d = normalize(position); gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.); }',
+  fragmentShader: `varying vec3 d; uniform vec3 sun; void main(){ float y = clamp(d.y,-.2,1.);
+    vec3 col = mix(vec3(1.,.66,.4), vec3(.95,.58,.55), smoothstep(-.02,.1,y)); col = mix(col, vec3(.58,.5,.8), smoothstep(.06,.3,y)); col = mix(col, vec3(.2,.28,.6), smoothstep(.25,.8,y));
+    float s = max(dot(d,sun),0.); col += vec3(1.,.7,.4)*pow(s,4.)*.3 + vec3(1.,.85,.6)*pow(s,30.)*.45 + vec3(1.,.95,.85)*pow(s,700.)*4.; gl_FragColor = vec4(col,1.); }` });
+scene.add(new THREE.Mesh(new THREE.SphereGeometry(200, 32, 16), skyMat));
+scene.add(new THREE.HemisphereLight(0xbcc6ff, 0x6a7a3a, 1.0));
+const sun = new THREE.DirectionalLight(SUNC, 3.6); sun.position.copy(SUN).multiplyScalar(12); scene.add(sun); scene.add(sun.target);
+sun.shadow.mapSize.set(1024, 1024); Object.assign(sun.shadow.camera, { left: -2.5, right: 2.5, top: 2.5, bottom: -2.5, near: 1, far: 30 }); sun.shadow.bias = -.001; sun.shadow.normalBias = .03;
+const fill = new THREE.DirectionalLight(0xc6d4ff, .8); fill.position.set(-2, 3, 6); scene.add(fill);
+const ground = new THREE.Mesh(new THREE.CircleGeometry(120, 48).rotateX(-Math.PI / 2), new THREE.MeshStandardMaterial({ color: 0x3f5a22, roughness: 1 })); ground.receiveShadow = true; scene.add(ground);
+/* 풀 */
+let grass = null;
+function buildGrass() { if (grass) { scene.remove(grass); grass.dispose(); }
+  const blade = new THREE.BufferGeometry(); blade.setAttribute('position', new THREE.Float32BufferAttribute([-.5, 0, 0, .5, 0, 0, -.4, .35, 0, .4, .35, 0, -.25, .68, 0, .25, .68, 0, 0, 1, 0], 3)); blade.setIndex([0, 1, 2, 2, 1, 3, 2, 3, 4, 4, 3, 5, 4, 5, 6]); blade.setAttribute('normal', new THREE.Float32BufferAttribute(new Array(7).fill([0, 1, 0]).flat(), 3));
+  const gm = new THREE.MeshStandardMaterial({ roughness: .75, side: THREE.DoubleSide });
+  gm.onBeforeCompile = s => { s.uniforms.uT = gm.userData.uT = { value: 0 }; s.vertexShader = s.vertexShader.replace('#include <common>', '#include <common>\nvarying float vH; uniform float uT;').replace('#include <begin_vertex>', 'vec3 transformed = position; float t = position.y; float ph = instanceMatrix[3][0]*2.3+instanceMatrix[3][2]*1.9; transformed.x += t*t*(.8*sin(ph) + .35*sin(uT*1.6+ph)); transformed.z += t*t*.6*cos(ph*1.3); vH = t;');
+    s.fragmentShader = s.fragmentShader.replace('#include <common>', '#include <common>\nvarying float vH;').replace('#include <color_fragment>', '#include <color_fragment>\ndiffuseColor.rgb *= mix(.25, 1.05, vH);'); };
+  grass = new THREE.InstancedMesh(blade, gm, T.grass); const m4 = new THREE.Matrix4(), q = new THREE.Quaternion(), v = new THREE.Vector3(), sc = new THREE.Vector3(), col = new THREE.Color(), eu = new THREE.Euler(); seed = 11;
+  for (let i = 0; i < T.grass; i++) { const a = rnd() * 6.283, r = Math.pow(rnd(), .62) * 9; v.set(Math.cos(a) * r, 0, Math.sin(a) * r); eu.set(R(-.3, .3), rnd() * 6.283, R(-.3, .3)); q.setFromEuler(eu); sc.set(R(.012, .022) * (T.grass < 20000 ? 1.6 : 1), R(.08, .2) * (rnd() < .05 ? 1.8 : 1), 1); m4.compose(v, q, sc); grass.setMatrixAt(i, m4); col.setHSL(R(.19, .3), R(.45, .7), R(.22, .42)); grass.setColorAt(i, col); }
+  grass.receiveShadow = T.sh; grass.frustumCulled = false; scene.add(grass); }
+const leaf = [0x1f3316, 0x2a4020, 0x33481f].map(c => new THREE.MeshStandardMaterial({ color: c, roughness: 1 })), ico = new THREE.IcosahedronGeometry(1, 1);
+for (let i = 0; i < 520; i++) { const a = rnd() * 6.283, r = R(40, 80), b = new THREE.Mesh(ico, leaf[i % 3]), s = R(.9, 2.4); b.scale.set(s, s * R(1, 1.6), s); b.position.set(Math.cos(a) * r, R(.3, 3.2) + (rnd() < .2 ? R(1, 4) : 0), Math.sin(a) * r); scene.add(b); }
+/* ── 몸 빚기: 치수(P) → 캡슐 묶음 → 한 덩어리 면 + 뼈대 무게 ── */
+const BONES = ['root', 'neck', 'head', 'tail1', 'tail2', 'fl1', 'fl2', 'fr1', 'fr2', 'hl1', 'hl2', 'hr1', 'hr2'];
+function spec() { const L = P.len, G = P.girth, LG = P.leg, HD = P.head, MZ = P.muzzle, top = .2 + .21 * LG, zf = .16 * L, zb = -.2 * L, nk = [0, top + .05, zf + .05], hd = [0, top + .19 + .02 * HD, zf + .16];
+  const pr = [], add = (bone, a, b, r, r2) => pr.push({ bone, a, b: b || a, r, r2: r2 ?? r }), both = (bl, br, a, b, r, r2) => { add(bl, a, b, r, r2); add(br, [-a[0], a[1], a[2]], b ? [-b[0], b[1], b[2]] : null, r, r2); };
+  add('root', [0, top, zf], [0, top, zb], .125 * G, .112 * G); add('root', [0, top - .04, zf + .02], null, .12 * G);
+  add('neck', nk, [0, hd[1] - .04, hd[2] - .04], .088 * G, .074);
+  add('head', hd, null, .092 * HD); add('head', [0, hd[1] - .015, hd[2] + .055], [0, hd[1] - .03, hd[2] + .055 + .105 * MZ], .052 * HD, .034 * HD); both('head', 'head', [.04 * HD, hd[1] - .025, hd[2] + .07], null, .045 * HD);
+  const ex = .062 * HD, ey = hd[1] + .065 * HD, ez = hd[2] - .02;
+  if (P.ear === 'prick') both('head', 'head', [ex, ey, ez], [ex + .024, ey + .09 * HD, ez - .018], .034, .011);
+  else if (P.ear === 'fold') { both('head', 'head', [ex, ey, ez], [ex + .02, ey + .045, ez], .034, .026); both('head', 'head', [ex + .02, ey + .045, ez], [ex + .03, ey + .01, ez + .05], .026, .012); }
+  else both('head', 'head', [ex + .012, ey - .01, ez], [ex + .04, ey - .12 * HD, ez + .01], .034, .024);
+  const fy = top - .05, lowF = fy * .45, hy = top - .03, lowH = hy * .5;
+  both('fl1', 'fr1', [.078 * G, fy, zf + .01], [.078 * G, lowF, zf + .01], .05, .04); both('fl2', 'fr2', [.078 * G, lowF, zf + .01], [.078 * G, .05, zf + .01], .04, .034); both('fl2', 'fr2', [.078 * G, .03, zf + .025], null, .038);
+  both('hl1', 'hr1', [.085 * G, hy, zb], [.09 * G, lowH, zb - .065], .064, .04); both('hl2', 'hr2', [.09 * G, lowH, zb - .065], [.09 * G, .05, zb - .025], .04, .032); both('hl2', 'hr2', [.09 * G, .03, zb - .005], null, .038);
+  const tb = [0, top + .04, zb - .09]; let t2;
+  if (P.tail === 'curl') { t2 = [0, tb[1] + .15, tb[2] - .04]; add('tail1', tb, t2, .045); add('tail2', t2, [0, t2[1] + .085, t2[2] + .08], .047); add('tail2', [0, t2[1] + .085, t2[2] + .08], [.02, t2[1] + .065, t2[2] + .18], .046, .03); }
+  else if (P.tail === 'long') { t2 = [0, tb[1] - .06, tb[2] - .13]; add('tail1', tb, t2, .04, .034); add('tail2', t2, [0, t2[1] - .1, t2[2] - .12], .034, .018); }
+  else { t2 = [0, tb[1] + .03, tb[2] - .05]; add('tail1', tb, t2, .04, .03); add('tail2', t2, [0, t2[1] + .01, t2[2] - .01], .03, .024); }
+  const piv = { root: [0, top, 0], neck: nk, head: [0, hd[1] - .05, hd[2] - .05], tail1: tb, tail2: t2, fl1: [.078 * G, fy, zf + .01], fl2: [.078 * G, lowF, zf + .01], fr1: [-.078 * G, fy, zf + .01], fr2: [-.078 * G, lowF, zf + .01], hl1: [.085 * G, hy, zb], hl2: [.09 * G, lowH, zb - .065], hr1: [-.085 * G, hy, zb], hr2: [-.09 * G, lowH, zb - .065] };
+  return { pr, piv, top, hd, zf, zb, HD, MZ, eye: [.043 * HD, hd[1] + .03 * HD, hd[2] + .078 * HD], nose: [0, hd[1] - .022, hd[2] + .055 + .105 * MZ + .03 * HD] }; }
+const dsd = (p, x, y, z) => { const a = p.a, b = p.b, bx = b[0] - a[0], by = b[1] - a[1], bz = b[2] - a[2], ax = x - a[0], ay = y - a[1], az = z - a[2], bb = bx * bx + by * by + bz * bz, h = bb > 0 ? Math.min(1, Math.max(0, (ax * bx + ay * by + az * bz) / bb)) : 0, dx = ax - bx * h, dy = ay - by * h, dz = az - bz * h; return Math.sqrt(dx * dx + dy * dy + dz * dz) - (p.r + (p.r2 - p.r) * h); };
+function sculpt(S) { const n = T.res, mc = new MarchingCubes(n, new THREE.MeshBasicMaterial(), false, false, 120000); mc.isolation = 80;
+  const ext = Math.max(.5, .34 * P.len + .28, S.top * .5 + .32), cy = (S.top + .3) / 2, half = n / 2, F = mc.field, pr = S.pr, k = .035;
+  const bx = pr.map(p => [Math.min(p.a[0], p.b[0]) - p.r - .06, Math.max(p.a[0], p.b[0]) + p.r + .06, Math.min(p.a[1], p.b[1]) - p.r - .06, Math.max(p.a[1], p.b[1]) + p.r + .06, Math.min(p.a[2], p.b[2]) - p.r - .06, Math.max(p.a[2], p.b[2]) + p.r + .06]);
+  for (let z = 0; z < n; z++) { const pz = (z - half) / half * ext; for (let y = 0; y < n; y++) { const py = (y - half) / half * ext + cy; for (let x = 0; x < n; x++) { const px = (x - half) / half * ext; let d = .2;
+        for (let i = 0; i < pr.length; i++) { const b = bx[i]; if (px < b[0] || px > b[1] || py < b[2] || py > b[3] || pz < b[4] || pz > b[5]) continue; const di = dsd(pr[i], px, py, pz), hh = Math.max(k - Math.abs(d - di), 0) / k; d = Math.min(d, di) - hh * hh * k * .25; }
+        F[x + y * n + z * n * n] = Math.max(0, 80 - d * 6000); } } }
+  mc.update(); const cnt = mc.count, g = new THREE.BufferGeometry(), Pp = new Float32Array(cnt * 3), Nn = new Float32Array(cnt * 3), SI = new Uint16Array(cnt * 4), SW = new Float32Array(cnt * 4), LN = new Float32Array(cnt), sm = THREE.MathUtils.smoothstep, w = new Float32Array(BONES.length);
+  for (let i = 0; i < cnt; i++) { const x = mc.positionArray[i * 3] * ext, y = mc.positionArray[i * 3 + 1] * ext + cy, z = mc.positionArray[i * 3 + 2] * ext; Pp[i * 3] = x; Pp[i * 3 + 1] = y; Pp[i * 3 + 2] = z; Nn[i * 3] = mc.normalArray[i * 3]; Nn[i * 3 + 1] = mc.normalArray[i * 3 + 1]; Nn[i * 3 + 2] = mc.normalArray[i * 3 + 2];
+    w.fill(0); for (let j = 0; j < pr.length; j++) { const d = Math.max(0, dsd(pr[j], x, y, z)), wi = Math.exp(-d / .022), bi = BONES.indexOf(pr[j].bone); if (wi > w[bi]) w[bi] = wi; }
+    let tot = 0; const top4 = [...w.keys()].sort((a, b) => w[b] - w[a]).slice(0, 4); top4.forEach(b => tot += w[b]); top4.forEach((b, j) => { SI[i * 4 + j] = b; SW[i * 4 + j] = w[b] / (tot || 1); });
+    let l = 1; l *= sm(Math.hypot(x, y - S.nose[1], z - S.nose[2]), .03, .2) * .72 + .28; l *= sm(Math.hypot(Math.abs(x) - S.eye[0], y - S.eye[1], z - S.eye[2]), .014, .045) * .85 + .15;
+    if (y < .22) l *= THREE.MathUtils.lerp(.22, 1, y / .22); if (z < S.zb - .02 && y > S.top + .03) l *= 1.6; if (z > S.zf - .08 && y > S.top - .13 && y < S.top + .15 && z < S.zf + .14) l *= 1.4; if (y > S.hd[1] + .08) l *= .35; LN[i] = l; }
+  g.setAttribute('position', new THREE.BufferAttribute(Pp, 3)); g.setAttribute('normal', new THREE.BufferAttribute(Nn, 3)); g.setAttribute('skinIndex', new THREE.BufferAttribute(SI, 4)); g.setAttribute('skinWeight', new THREE.BufferAttribute(SW, 4)); g.setAttribute('len', new THREE.BufferAttribute(LN, 1));
+  g.boundingSphere = new THREE.Sphere(new THREE.Vector3(0, .4, 0), 1.2); return g; }
+const furU = { sun: { value: SUN }, sunC: { value: SUNC }, flen: { value: .072 }, tint: { value: new THREE.Color(P.color) } };
+const furMat = (t, lay) => new THREE.ShaderMaterial({ uniforms: Object.assign({ t: { value: t }, dens: { value: lay < 12 ? 420 : 620 } }, furU), side: THREE.DoubleSide,
+  vertexShader: `#include <common>
+    #include <skinning_pars_vertex>
+    attribute float len; uniform float t, flen; varying vec3 vB, vN, vW;
+    void main(){ vB = position; vec3 objectNormal = normalize(normal); vec3 transformed = position + objectNormal * flen * len * t;
+      #include <skinbase_vertex>
+      #include <skinnormal_vertex>
+      #include <skinning_vertex>
+      transformed.y -= flen * len * t * t * .5;
+      vec4 w = modelMatrix * vec4(transformed,1.); vW = w.xyz; vN = normalize(mat3(modelMatrix) * objectNormal); gl_Position = projectionMatrix * viewMatrix * w; }`,
+  fragmentShader: `uniform float t, dens; uniform vec3 sun, sunC, tint; varying vec3 vB, vN, vW;
+    float h3(vec3 p){ p = fract(p*.3183099+.1); p *= 17.; return fract(p.x*p.y*p.z*(p.x+p.y+p.z)); }
+    void main(){ vec3 q = vB * dens; vec3 c = floor(q), f = fract(q) - .5; float r = h3(c), r2 = h3(c + 7.3);
+      float len = .3 + .7 * r; if (t > len) discard; float rad = .56 * (1. - t / len * .85); vec3 n = abs(normalize(vN));
+      float d = n.y > n.x && n.y > n.z ? length(f.xz) : (n.x > n.z ? length(f.yz) : length(f.xy)); if (d > rad) discard;
+      vec3 base = tint * mix(.86, 1.06, r2) * mix(.9, 1., h3(floor(vB*14.)));
+      vec3 N = normalize(vN), V = normalize(cameraPosition - vW); float ao = mix(.32, 1., pow(t, .65));
+      float dif = clamp(dot(N, sun) * .6 + .4, 0., 1.); float rim = pow(1. - max(dot(N, V), 0.), 2.) * (.25 + .75 * max(dot(-V, sun), 0.));
+      vec3 sky = mix(vec3(.46,.36,.3), vec3(.55,.6,.85), N.y * .5 + .5) * .72;
+      vec3 col = base * ao * (sky + sunC * dif * 1.15) + sunC * rim * t * 1.8 * mix(base, vec3(1.), .4);
+      col = col / (col + vec3(.6)) * 1.5; gl_FragColor = vec4(pow(col, vec3(1./2.2)), 1.); }` });
+const dog = new THREE.Group(); scene.add(dog); let rig = null;
+const blob = new THREE.Mesh(new THREE.CircleGeometry(.36, 24).rotateX(-Math.PI / 2), new THREE.MeshBasicMaterial({ color: 0x1c2a12, transparent: true, opacity: .35, depthWrite: false })); blob.position.y = .012; dog.add(blob);
+function build() { if (rig) { dog.remove(rig.group); rig.geo.dispose(); }
+  const S = spec(), geo = sculpt(S), group = new THREE.Group(), bones = {}, par = { neck: 'root', head: 'neck', tail1: 'root', tail2: 'tail1', fl1: 'root', fr1: 'root', hl1: 'root', hr1: 'root', fl2: 'fl1', fr2: 'fr1', hl2: 'hl1', hr2: 'hr1' };
+  BONES.forEach(n => { bones[n] = new THREE.Bone(); bones[n].name = n; });
+  BONES.forEach(n => { const p = S.piv[n], pp = par[n] ? S.piv[par[n]] : [0, 0, 0]; bones[n].position.set(p[0] - pp[0], p[1] - pp[1], p[2] - pp[2]); if (par[n]) bones[par[n]].add(bones[n]); });
+  group.add(bones.root); bones.root.updateMatrixWorld(true); const skel = new THREE.Skeleton(BONES.map(n => bones[n])), col = new THREE.Color(P.color);
+  const mk = m => { const s = new THREE.SkinnedMesh(geo, m); s.bind(skel, new THREE.Matrix4()); s.frustumCulled = false; group.add(s); return s; };
+  const base = mk(new THREE.MeshStandardMaterial({ color: col.clone().multiplyScalar(.82), roughness: 1 })); base.castShadow = T.sh;
+  furU.flen.value = .072 * P.fur; furU.tint.value.set(P.color);
+  for (let i = 1; i <= T.lay; i++) mk(furMat(i / T.lay, T.lay));
+  const gl = (c, r = .08) => new THREE.MeshPhysicalMaterial({ color: c, roughness: r, clearcoat: 1 }), sp = new THREE.SphereGeometry(1, 20, 14), hp = S.piv.head;
+  const put = (m, x, y, z, sx, sy, sz) => { const o = new THREE.Mesh(sp, m); o.position.set(x - hp[0], y - hp[1], z - hp[2]); o.scale.set(sx, sy ?? sx, sz ?? sx); bones.head.add(o); };
+  [-1, 1].forEach(sd => { put(gl(0x120a06), sd * S.eye[0], S.eye[1], S.eye[2], .0165 * S.HD, .0165 * S.HD, .013 * S.HD); put(new THREE.MeshBasicMaterial({ color: 0xffffff }), sd * S.eye[0] + .005, S.eye[1] + .007, S.eye[2] + .011, .0035); });
+  put(gl(0x080707, .3), S.nose[0], S.nose[1], S.nose[2], .024 * S.HD, .019 * S.HD, .019 * S.HD);
+  dog.add(group); rig = { group, bones, geo, S, rest: Object.fromEntries(BONES.map(n => [n, bones[n].position.clone()])) }; }
+/* ── 움직임: 걷기·뛰기·서 있기·앉기 (뼈대를 돌려 만듦) ── */
+const st = { x: 0, z: 0, head: 0, spd: 0, ph: 0, sit: 0, sitT: 0, jx: 0, jz: 0 }, keys = {};
+function animate(dt, time) { const b = rig.bones, S = rig.S, want = Math.min(1, Math.hypot(st.jx, st.jz)), maxS = 2.6;
+  if (want > .08) { st.sitT = 0; const tgt = Math.atan2(st.jx, st.jz); let da = tgt - st.head; da = Math.atan2(Math.sin(da), Math.cos(da)); st.head += da * Math.min(1, dt * 7); }
+  st.spd += ((want > .08 ? want * maxS : 0) - st.spd) * Math.min(1, dt * 6); st.sit += ((st.sitT && st.spd < .05 ? 1 : 0) - st.sit) * Math.min(1, dt * 5);
+  st.x += Math.sin(st.head) * st.spd * dt; st.z += Math.cos(st.head) * st.spd * dt; const rr = Math.hypot(st.x, st.z); if (rr > 6) { st.x *= 6 / rr; st.z *= 6 / rr; }
+  dog.position.set(st.x, 0, st.z); dog.rotation.y = st.head;
+  const run = THREE.MathUtils.smoothstep(st.spd, 1.3, 2.3), mv = Math.min(1, st.spd / .5), leg = P.leg; st.ph += dt * (3.2 + st.spd * 3.4) * mv / Math.sqrt(leg);
+  const amp = (.34 + .34 * run) * mv, sw = o => Math.sin(st.ph + o), lift = o => Math.max(0, Math.cos(st.ph + o));
+  const fo = run > .5 ? [0, .5, Math.PI, Math.PI + .5] : [0, Math.PI, Math.PI, 0];   // 걷기 = 대각선 짝, 뛰기 = 앞다리·뒷다리 짝
+  const sit = st.sit, bob = Math.sin(st.ph * 2) * .012 * mv * (1 + run), br = Math.sin(time * 1.6) * .004;
+  b.root.position.copy(rig.rest.root); b.root.position.y += bob + br - sit * S.top * .2; b.root.rotation.set(-sit * .52 + Math.sin(st.ph) * .05 * run, Math.sin(st.ph) * .04 * mv, Math.sin(st.ph) * .03 * mv);
+  b.fl1.rotation.x = sw(fo[0]) * amp + sit * .5; b.fl2.rotation.x = -lift(fo[0] + .6) * amp * 1.1; b.fr1.rotation.x = sw(fo[1]) * amp + sit * .5; b.fr2.rotation.x = -lift(fo[1] + .6) * amp * 1.1;
+  b.hl1.rotation.x = sw(fo[2]) * amp - sit * 1.25; b.hl2.rotation.x = lift(fo[2] + .6) * amp * 1.2 + sit * 2.0; b.hr1.rotation.x = sw(fo[3]) * amp - sit * 1.25; b.hr2.rotation.x = lift(fo[3] + .6) * amp * 1.2 + sit * 2.0;
+  b.neck.rotation.x = sit * .42 - run * .12 + Math.sin(st.ph * 2 + .6) * .04 * mv; b.head.rotation.set(Math.sin(st.ph * 2) * .04 * mv + Math.sin(time * .7) * .03 * (1 - mv), Math.sin(time * .45) * .18 * (1 - mv), 0);
+  const wag = Math.sin(time * (9 - 3 * mv)) * (.32 - .14 * mv); b.tail1.rotation.set(-run * .25 + sit * .3, 0, wag); b.tail2.rotation.z = wag * .8; blob.scale.setScalar(.9 + P.len * .2);
+  const cx = st.x - Math.sin(camYaw) * 2.4, cz = st.z - Math.cos(camYaw) * 2.4; cam.position.lerp(camT.set(cx, .95, cz), Math.min(1, dt * 3)); cam.lookAt(st.x, .4, st.z);
+  sun.target.position.set(st.x, 0, st.z); sun.position.set(st.x + SUN.x * 12, SUN.y * 12, st.z + SUN.z * 12); }
+let camYaw = Math.PI * .82; const camT = new THREE.Vector3(); cam.position.set(-Math.sin(camYaw) * 2.4, .95, -Math.cos(camYaw) * 2.4);
+function apply() { T = TIER[tierName]; renderer.setPixelRatio(Math.min(devicePixelRatio || 1, T.dpr)); renderer.shadowMap.enabled = T.sh; sun.castShadow = T.sh; blob.visible = !T.sh; buildGrass(); build(); size(); }
+function size() { renderer.setSize(innerWidth, innerHeight, false); cam.aspect = innerWidth / innerHeight; cam.fov = innerWidth < innerHeight ? 44 : 34; cam.updateProjectionMatrix(); }
+addEventListener('resize', size);
+/* 조작 */
+addEventListener('keydown', e => { keys[e.key] = 1; if (e.key === ' ') st.sitT = 1; }); addEventListener('keyup', e => { keys[e.key] = 0; });
+const joy = $('#joy'), nub = joy.firstElementChild; let jid = null;
+const jmove = e => { const r = joy.getBoundingClientRect(), dx = (e.clientX - r.left - 60) / 44, dy = (e.clientY - r.top - 60) / 44, m = Math.max(1, Math.hypot(dx, dy)); jx = dx / m; jy = dy / m; nub.style.transform = `translate(${jx * 34}px,${jy * 34}px)`; };
+let jx = 0, jy = 0; joy.addEventListener('pointerdown', e => { jid = e.pointerId; joy.setPointerCapture(jid); jmove(e); }); joy.addEventListener('pointermove', e => { if (e.pointerId === jid) jmove(e); });
+const jend = e => { if (e.pointerId === jid) { jid = null; jx = jy = 0; nub.style.transform = ''; } }; joy.addEventListener('pointerup', jend); joy.addEventListener('pointercancel', jend);
+let drag = null; renderer.domElement.addEventListener('pointerdown', e => { drag = e.clientX; }); addEventListener('pointermove', e => { if (drag != null && e.pointerId !== jid) { camYaw -= (e.clientX - drag) * .008; drag = e.clientX; } }); addEventListener('pointerup', () => { drag = null; });
+$('#sit').onclick = () => { st.sitT = st.sitT ? 0 : 1; };
+$('#open').onclick = () => $('#panel').classList.add('on'); $('#x').onclick = () => $('#panel').classList.remove('on');
+let deb = 0; document.querySelectorAll('#panel input[type=range]').forEach(i => { i.value = P[i.dataset.k]; i.oninput = () => { P[i.dataset.k] = +i.value; clearTimeout(deb); deb = setTimeout(build, 60); }; });
+document.querySelectorAll('#panel .ch').forEach(c => { const k = c.dataset.c, upd = () => c.querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', b.dataset.v === P[k])); upd(); c.querySelectorAll('button').forEach(b => b.onclick = () => { P[k] = b.dataset.v; upd(); if (k === 'q') { tierName = P.q === 'auto' ? 'mid' : P.q; autoDone = P.q !== 'auto'; apply(); } else build(); }); });
+/* 그리기 + 성능 보고 단계 자동 조절 */
+let last = performance.now(), acc = 0, frames = 0, autoDone = P.q !== 'auto', slow = 0, time = 0;
+function frame(now) { const dt = Math.min(.05, (now - last) / 1000); last = now; time += dt;
+  const kx = (keys.ArrowRight || keys.d ? 1 : 0) - (keys.ArrowLeft || keys.a ? 1 : 0), kz = (keys.ArrowUp || keys.w ? 1 : 0) - (keys.ArrowDown || keys.s ? 1 : 0), ix = jx + kx, iz = -jy + kz, cs = Math.cos(camYaw), sn = Math.sin(camYaw);
+  st.jx = ix * -cs + iz * sn; st.jz = ix * sn + iz * cs; if (keys.Shift) { st.jx *= .45; st.jz *= .45; }
+  if (grass && grass.material.userData.uT) grass.material.userData.uT.value = time; animate(dt, time); renderer.render(scene, cam);
+  acc += dt; frames++; if (acc >= 1) { const fps = frames / acc; $('#fps').textContent = Math.round(fps) + ' fps · ' + tierName + ' · fur ' + T.lay + ' layers · grass ' + T.grass.toLocaleString(); 
+    if (!autoDone && time > 2) { if (fps < 28 && tierName !== 'low') { slow++; if (slow >= 2) { tierName = tierName === 'high' ? 'mid' : 'low'; slow = 0; apply(); } } else if (time > 8) autoDone = true; } acc = 0; frames = 0; }
+  requestAnimationFrame(frame); }
+apply(); if (QS.get('pose')) { const a = QS.get('pose').split(',').map(Number); st.jx = a[0] || 0; st.jz = a[1] || 0; st.sitT = a[2] || 0; window.__hold = 1; const ow = animate; }
+window.__st = st; window.__P = P; window.__build = build; window.__ready = 1; requestAnimationFrame(frame);
+</script></body></html>

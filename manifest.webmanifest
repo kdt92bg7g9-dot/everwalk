@@ -1,0 +1,31 @@
+{
+  "name": "Rainbow Meadow by Everwalk",
+  "short_name": "Everwalk",
+  "description": "무지개 다리 건넌 아이와 다시 함께 걷는 곳",
+  "id": "/",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "lang": "ko",
+  "background_color": "#6c7ecf",
+  "theme_color": "#4a60b4",
+  "icons": [
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "/icons/icon-maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

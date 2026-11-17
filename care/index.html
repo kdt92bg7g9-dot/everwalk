@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ko" data-ds-theme="light" data-ds-mode="light" data-ds-service="pet" data-ds-lang="kr">
+<head><script>try{localStorage.setItem("ds-lang-last","kr")}catch(t){}</script>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net; font-src 'self' data: https://fonts.gstatic.com https://cdn.jsdelivr.net; img-src 'self' data: blob: https:; media-src 'self' blob: data:; connect-src 'self' https://rnyfvhttbqkuaixotloc.supabase.co wss://rnyfvhttbqkuaixotloc.supabase.co https://cdn.jsdelivr.net https://api.emailjs.com https://api.mymemory.translated.net; worker-src 'self' blob:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#3C54A8">
+<title>Everwalk Care</title><meta name="robots" content="noindex">
+
+
+
+
+
+
+
+
+<meta name="description" content="곁에 있는 아이의 산책 · 식사 · 접종 · 체중 · 투약을 한곳에서 기록합니다.">
+
+
+<link rel="icon" href="/care/assets/img/favicon.svg?v=2636b51ad3" type="image/svg+xml"><link rel="icon" href="/care/assets/img/favicon-light.svg?v=5dbfeeded5" type="image/svg+xml" media="(prefers-color-scheme: light)">
+
+
+
+<link rel="stylesheet" href="assets/css/styles.css?v=96fbea90e5">
+<link rel="stylesheet" href="assets/css/soft.css?v=3ff62e02ce">
+<link rel="stylesheet" href="assets/css/unify.css?v=da115bf11e">
+<link rel="stylesheet" href="assets/css/mobile-drawer.css?v=42e96d0050"><link rel="stylesheet" href="/care/s/datasmith-tokens.css?v=9db58e048e"><link rel="stylesheet" href="/care/assets/css/premium.css?v=c5ed6039f6"><link rel="stylesheet" href="/care/s/datasmith-shell.css?v=d381da1256">
+<style>html.ds-boot body{visibility:hidden}</style><script>document.documentElement.classList.add("ds-boot"),setTimeout(function(){document.documentElement.classList.remove("ds-boot")},1e4);</script>
+
+
+
+
+<link rel="icon" type="image/png" sizes="32x32" href="/care/assets/img/favicon-32.png?v=99922f135e">
+<link rel="icon" type="image/png" sizes="192x192" href="/care/assets/img/icon-192.png?v=64d2b6f4b1">
+<link rel="apple-touch-icon" href="/care/assets/img/apple-touch-icon.png?v=65ea084638">
+<link rel="manifest" href="/care/manifest.webmanifest?v=d0865fbb54">
+<meta name="application-name" content="DATASMITH Pet">
+<meta name="apple-mobile-web-app-title" content="DATASMITH Pet">
+<script src="/care/s/datasmith-saveguard.js?v=8260ea91e0"></script><link rel="stylesheet" href="/care/s/datasmith-unify.css?v=cba6c33536"><link rel="stylesheet" href="/care/care.css?v=11172346"></head>
+<body>
+<div id="ew-bar"><button type="button" id="cb-menu" aria-label="메뉴">&#9776;</button><a class="ew-brand" href="/care/">Everwalk<span>Care</span></a><span class="ew-sp"></span><a href="/">별이 된 아이와 걷기</a><button type="button" id="ew-out">로그아웃</button></div>
+
+
+<div class="auth" id="auth" hidden></div>
+
+<div class="app">
+  <aside class="rail">
+    <nav class="nav" id="railNav"></nav>
+    <div class="rail-foot">
+      <div class="pet-mini" id="railPet"></div>
+      <div class="rail-note">기록·분석은 참고용이며<br>진단과 처방은 수의사와 상담해 주시길 바랍니다.</div>
+      <div class="ew-beta"><a href="/">Everwalk</a> · <a href="/terms.html">이용약관</a> · <a href="/privacy-policy.html">개인정보 처리방침</a> · <a href="/delete.html">탈퇴</a><br>문의: <a href="mailto:admin@datasmith.co.kr?subject=%5BEverwalk%5D">admin@datasmith.co.kr</a><br>Everwalk Care 는 BETA 기간 동안 무료이며, 바뀔 수 있습니다. 이용약관이 적용됩니다.</div>
+    </div>
+  </aside>
+  <div class="main">
+    <div class="topbar">
+      <div class="topbar-in">
+        <div class="tb-title" id="tbTitle"></div>
+        <div class="tb-right" id="tbRight"></div>
+      </div>
+    </div>
+    <div class="wrap" id="view"></div>
+  </div>
+</div>
+<button class="fab" id="fab" data-act="quick-menu" aria-label="기록 추가" title="기록 추가">＋ 기록</button>
+<nav class="mobile-bar" id="mobileNav"></nav>
+<div class="overlay" id="overlay"></div>
+<div class="modal" id="modal"><div id="modalIn"></div></div>
+<div class="sheet" id="sheet"><div id="sheetIn"></div></div>
+<div class="toast" id="toast"><span class="dot"></span><span id="toastTx"></span></div>
+<div class="onb" id="onb"><div class="onb-in" id="onbIn"></div></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.119.0/dist/umd/supabase.js"></script>
+
+
+
+<style>
+  .rail{top:var(--ds-cbar-h,44px);height:calc(100vh - var(--ds-cbar-h,44px))}
+  .topbar{top:var(--ds-cbar-h,44px)}
+</style>
+
+
+
+
+<script>function petDrawer(e){var t=void 0===e?!document.body.classList.contains("pet-drawer-open"):e;document.body.classList.toggle("pet-drawer-open",t)}document.addEventListener("datasmith:logout",function(){location.reload()}),document.addEventListener("datasmith:drawer-toggle",function(){petDrawer()}),document.addEventListener("click",function(e){var t=e.target;t.closest&&(t.closest(".rail")&&t.closest('[data-act="route"],.pet-mini-btn')?petDrawer(!1):!document.body.classList.contains("pet-drawer-open")||t.closest(".rail")||t.closest("#cb-menu")||petDrawer(!1))},!0),document.addEventListener("keydown",function(e){"Escape"===e.key&&petDrawer(!1)});</script>
+<script>window.EW_CARE=1,window.EW_CARE_SCRIPTS=["/care/js/config.js?v=202d3039c4","/care/js/auth.js?v=b296142f4a","/care/js/cloud.js?v=9aacd77074","/care/js/data.js?v=6911471900","/care/js/engine.js?v=b072887d66","/care/js/aftercare.js?v=930cbfe430","/care/js/health.js?v=1a8bced16d","/care/js/meds.js?v=498aba1091","/care/js/groom.js?v=d689165ac8","/care/js/ref.js?v=befb31cbe2","/care/js/app.js?v=7d17bc8dc8","/care/js/vendor/exceljs.min.js?v=bdfca3a227","/care/js/bulk.js?v=0dab05b1ac","/care/s/datasmith-community-consent.js?v=1604cf4cb7","/care/js/walkfriends.js?v=32099203d0","/care/js/behavior.js?v=ee70de029e","/care/js/walksigns.js?v=e912e8cb2a","/care/js/walkweather.js?v=5b4e560b4e","/care/s/datasmith-insight.js?v=0ce8d935cb","/care/js/insight.js?v=e02e6c1e05","/care/js/correlate.js?v=4978a17fc9","/care/js/timeline.js?v=2f2d4b626c","/care/js/breedcare.js?v=83f723cf49","/care/js/walkmulti.js?v=5ada715792","/care/js/walkparty.js?v=a97adb74cb","/care/s/datasmith-wake.js?v=90275e2713","/care/js/walkgps.js?v=8488ab92cb","/care/js/notify.js?v=e9cc6f02ce","/care/js/intake.js?v=6bafffb4f9","/care/js/soft.js?v=b7541809aa","/care/s/datasmith-viz.js?v=41d7925d3d","/care/s/datasmith-unify.js","/care/look.js?v=11172346"];</script>
+<script src="/care/boot.js?v=11172346"></script>
+<script src="/ew-traffic.js?v=1db2fd724a" defer></script>
+<script src="/ew-engage.js?v=b531775916" defer></script>
+</body>
+</html>

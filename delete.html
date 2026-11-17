@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://datasmith.co.kr; font-src 'self' data: https://datasmith.co.kr; img-src 'self' data:; connect-src 'self' https://rnyfvhttbqkuaixotloc.supabase.co; object-src 'none'; base-uri 'self'; form-action 'self'">
+<title>탈퇴 · Everwalk</title>
+<link rel="icon" href="/icons/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="https://datasmith.co.kr/fonts/pretendard/pretendardvariable-dynamic-subset.min.css">
+<style>
+*{box-sizing:border-box}html,body{min-height:100%;margin:0}
+body{font-family:"Pretendard Variable",Pretendard,system-ui,-apple-system,sans-serif;color:#26303a;background:radial-gradient(60% 34% at 50% 62%,rgba(255,236,210,.7),rgba(255,236,210,0) 70%),linear-gradient(#34407e 0%,#6b6fb8 38%,#c79fc4 66%,#f3c9b6 100%) fixed;display:grid;place-items:center;padding:24px 16px calc(24px + env(safe-area-inset-bottom))}
+main{width:min(400px,100%);background:rgba(255,255,255,.8);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);border:1px solid rgba(255,255,255,.9);border-radius:24px;padding:28px 22px 24px;box-shadow:0 22px 60px rgba(40,30,80,.28);color:#2a2f66;display:flex;flex-direction:column;gap:14px}
+.brand{display:flex;align-items:center;gap:10px}.brand img{width:44px;height:44px;border-radius:12px}.brand b{font-size:13px;letter-spacing:.42em;font-weight:700;color:#6b6fb8}
+h1{font-size:21px;margin:0;font-weight:600;letter-spacing:-.02em}p{margin:0;font-size:13.5px;line-height:1.7;color:#555a8a}
+label{display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:600}
+input{min-height:48px;border-radius:14px;border:1px solid #d9d3ea;padding:0 14px;font:inherit;font-size:16px;background:#fff;color:inherit}
+input:focus-visible,button:focus-visible,a:focus-visible{outline:2px solid #8a6fb8;outline-offset:2px}
+button{min-height:50px;border-radius:999px;border:0;font:inherit;font-size:15px;font-weight:700;cursor:pointer}
+.pri{background:linear-gradient(135deg,#4a4f93,#8a6fb8);color:#fff;box-shadow:0 8px 20px rgba(74,79,147,.3)}.sec{background:#fff;color:#26303a;border:1px solid rgba(38,48,58,.2);display:flex;align-items:center;justify-content:center;gap:10px}
+button:disabled{opacity:.6}
+.or{display:flex;align-items:center;gap:10px;font-size:12px;color:#7a8490}.or::before,.or::after{content:"";flex:1;height:1px;background:rgba(38,48,58,.14)}
+#msg{min-height:20px;font-size:13.5px;color:#b3403a;font-weight:600}#msg.ok{color:#3f6a52}
+.links{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:13px}a{color:#4a60b4}
+select{min-height:48px;border-radius:12px;border:1px solid rgba(38,48,58,.2);padding:0 12px;font:inherit;font-size:16px;background:#fff;color:inherit;width:100%}
+.ck{flex-direction:row;align-items:flex-start;gap:10px;font-weight:500;line-height:1.6}.ck input{min-height:0;width:20px;height:20px;margin-top:2px;flex:none}
+.col{display:flex;flex-direction:column;gap:12px}[hidden]{display:none!important}.lk{background:none;border:0;min-height:0;padding:0;color:#4a60b4;font-size:13px;font-weight:500;text-decoration:underline;cursor:pointer}
+.del{background:#b3403a;color:#fff}.btnlink{display:flex;align-items:center;justify-content:center;min-height:50px;border-radius:999px;font-size:15px;font-weight:700;text-decoration:none}
+.why{border:1px solid rgba(38,48,58,.16);border-radius:16px;padding:12px 14px;margin:0;display:flex;flex-direction:column;gap:8px}.why legend{font-size:13px;font-weight:700;padding:0 4px}.why legend span{font-weight:500;color:#7a8490}.why .ck{font-size:13.5px}.tiny{font-size:12px;color:#7a8490}
+</style>
+</head>
+<body>
+<main>
+  <div class="brand"><img src="/icons/icon-192.png" alt=""><b>EVERWALK</b></div>
+  <h1 id="h1">탈퇴</h1>
+  <p id="lead">로그인 상태를 확인하고 있습니다</p>
+  <div id="v-out" class="col" hidden>
+    <a class="btnlink pri" id="go-in" href="/login.html?next=%2Fdelete.html">로그인하고 계속하기</a>
+  </div>
+  <form id="v-del" class="col" novalidate hidden>
+    <p><b>지워지는 것:</b> 계정, 아이와 들판 아이템, 친구와 선물, 모든 돌봄 기록. 지운 뒤에는 되돌릴 수 없습니다.</p>
+    <p>악용을 막기 위해 같은 이메일로는 7일 동안 다시 가입할 수 없습니다.</p>
+    <fieldset class="why"><legend>떠나시는 이유를 알려 주시겠습니까? <span>선택 · 해당하는 것을 골라 주시길 바랍니다</span></legend>
+      <label class="ck"><input type="checkbox" name="why" value="feature"> 필요한 기능이 없습니다</label>
+      <label class="ck"><input type="checkbox" name="why" value="hard"> 쓰기 어렵습니다</label>
+      <label class="ck"><input type="checkbox" name="why" value="idle"> 잘 쓰지 않게 되었습니다</label>
+      <label class="ck"><input type="checkbox" name="why" value="other_app"> 다른 방법으로 기록합니다</label>
+      <label class="ck"><input type="checkbox" name="why" value="bug"> 오류가 나거나 느립니다</label>
+      <label class="ck"><input type="checkbox" name="why" value="privacy"> 개인정보가 걱정됩니다</label>
+      <label class="ck"><input type="checkbox" name="why" value="noti"> 알림이 너무 많습니다</label>
+      <label class="ck"><input type="checkbox" name="why" value="etc"> 그 밖의 이유</label>
+      <label>남기고 싶은 말씀이 있으면 적어 주시길 바랍니다 <input id="d-note" type="text" maxlength="180" autocomplete="off" placeholder="선택"></label>
+      <p class="tiny">답변은 이름·이메일 없이 보관하며 Everwalk 를 고치는 데에만 씁니다.</p>
+    </fieldset>
+    <label>확인을 위해 「탈퇴」라고 입력해 주시길 바랍니다<input id="d-word" type="text" autocomplete="off" autocapitalize="characters" placeholder="탈퇴" required></label>
+    <button class="del" id="d-go" type="submit">탈퇴하기</button>
+  </form>
+  <div id="v-other" class="col" hidden>
+    <p>이 계정은 Everwalk 에서 만든 계정이 아니어서 이 화면에서 지울 수 없습니다. 계정 이메일로 <a href="mailto:admin@datasmith.co.kr?subject=%5BEverwalk%5D%20Delete%20my%20account">admin@datasmith.co.kr</a> 에 메일을 보내 주시면 지워 드립니다.</p>
+  </div>
+  <div id="msg" role="status" aria-live="polite"></div>
+  <div class="links"><a href="/">Everwalk 로 돌아가기</a><a href="/privacy-policy.html">개인정보 처리방침</a></div>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.119.0/dist/umd/supabase.js"></script>
+<script>!function(){function e(e){return document.getElementById(e)}function t(t,a){var n=e("msg");n.textContent=t||"",n.className=a?"ok":""}var a,n="연결하지 못했습니다. 잠시 뒤에 다시 해 보시길 바랍니다.";try{a=window.supabase.createClient("https://rnyfvhttbqkuaixotloc.supabase.co","sb_publishable_ORQT2nyVAI9mWN151sAc8A_leBcX5f-")}catch(a){return e("lead").hidden=!0,void t(n)}function r(){location.replace("/login.html?next="+encodeURIComponent("/delete.html"))}a.auth.getSession().then(function(t){var a=t&&t.data&&t.data.session;if(e("lead").hidden=!0,!a)return e("lead").hidden=!1,e("lead").textContent="먼저 로그인하시면 여기에서 탈퇴할 수 있습니다.",void(e("v-out").hidden=!1);"everwalk"===(a.user&&a.user.user_metadata||{}).app?(e("lead").hidden=!1,e("lead").textContent=(a.user.email||"내 계정")+" 계정으로 로그인해 있습니다.",e("v-del").hidden=!1):e("v-other").hidden=!1}).catch(function(){e("lead").hidden=!0,t(n)}),e("v-del").addEventListener("submit",async function(o){o.preventDefault();var d=e("d-go");if("탈퇴"===e("d-word").value.trim().toUpperCase()){d.disabled=!0,t("Deleting",!0);try{try{var i=[].map.call(document.querySelectorAll("input[name=why]:checked"),function(e){return e.value}),l=(e("d-note").value||"").trim().slice(0,180),c=await a.rpc("ds_withdrawal_reason",{p_reasons:i,p_note:"[Everwalk] "+l});if(c.error&&/MFA_REQUIRED/.test(c.error.message||""))return void r()}catch(e){}var s=await a.rpc("record_my_deletion");if(s.error&&/MFA_REQUIRED/.test(s.error.message||""))return void r();var u=await a.rpc("delete_my_account",{p_confirm:"계정 영구 삭제"});if(u.error)return/MFA_REQUIRED/.test(u.error.message||"")?void r():(t("계정을 지우지 못했습니다. 다시 해 보시거나 admin@datasmith.co.kr 로 메일을 보내 주시길 바랍니다."),void(d.disabled=!1));try{window.dispatchEvent(new CustomEvent("ew:evt",{detail:{name:"delete_done"}}))}catch(e){}try{await a.auth.signOut({scope:"local"})}catch(e){}try{for(var h=[],v=0;v<localStorage.length;v++){var m=localStorage.key(v);/^(everwalk-|pet\.|sb-|ew-)/.test(m)&&"ew-age-block"!==m&&h.push(m)}h.forEach(function(e){localStorage.removeItem(e)})}catch(e){}e("v-del").hidden=!0,e("lead").textContent="계정과 기록을 모두 지웠습니다. 함께 걸어 주셔서 고맙습니다.",e("h1").textContent="계정을 지웠습니다",t("")}catch(e){t(n),d.disabled=!1}}else t("「탈퇴」라고 입력해 주시길 바랍니다.")})}();</script>
+<script src="/ew-traffic.js?v=1db2fd724a" defer></script>
+</body>
+</html>

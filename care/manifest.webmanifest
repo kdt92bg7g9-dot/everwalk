@@ -1,0 +1,28 @@
+{
+ "name": "Everwalk Care",
+ "short_name": "Everwalk",
+ "id": "/care/",
+ "start_url": "/care/",
+ "scope": "/care/",
+ "display": "standalone",
+ "background_color": "#F5F1FA",
+ "theme_color": "#3C54A8",
+ "icons": [
+  {
+   "src": "/care/assets/img/icon-192.png",
+   "sizes": "192x192",
+   "type": "image/png"
+  },
+  {
+   "src": "/care/assets/img/icon-512.png",
+   "sizes": "512x512",
+   "type": "image/png"
+  },
+  {
+   "src": "/care/assets/img/icon-maskable.png",
+   "sizes": "512x512",
+   "type": "image/png",
+   "purpose": "maskable"
+  }
+ ]
+}

@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://datasmith.co.kr; font-src 'self' data: https://datasmith.co.kr; img-src 'self' data:; connect-src 'self' https://rnyfvhttbqkuaixotloc.supabase.co; object-src 'none'; base-uri 'self'; form-action 'self'">
+<title>로그인 · Everwalk</title>
+<link rel="icon" href="/icons/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="https://datasmith.co.kr/fonts/pretendard/pretendardvariable-dynamic-subset.min.css">
+<style>
+*{box-sizing:border-box}html,body{min-height:100%;margin:0}
+body{font-family:"Pretendard Variable",Pretendard,system-ui,-apple-system,sans-serif;color:#26303a;background:radial-gradient(60% 34% at 50% 62%,rgba(255,236,210,.7),rgba(255,236,210,0) 70%),linear-gradient(#34407e 0%,#6b6fb8 38%,#c79fc4 66%,#f3c9b6 100%) fixed;display:grid;place-items:center;padding:24px 16px calc(24px + env(safe-area-inset-bottom))}
+main{width:min(400px,100%);background:rgba(255,255,255,.8);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);border:1px solid rgba(255,255,255,.9);border-radius:24px;padding:28px 22px 24px;box-shadow:0 22px 60px rgba(40,30,80,.28);color:#2a2f66;display:flex;flex-direction:column;gap:14px}
+.brand{display:flex;align-items:center;gap:10px}.brand img{width:44px;height:44px;border-radius:12px}.brand b{font-size:13px;letter-spacing:.42em;font-weight:700;color:#6b6fb8}
+h1{font-size:21px;margin:0;font-weight:600;letter-spacing:-.02em}p{margin:0;font-size:13.5px;line-height:1.7;color:#555a8a}
+label{display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:600}
+input{min-height:48px;border-radius:14px;border:1px solid #d9d3ea;padding:0 14px;font:inherit;font-size:16px;background:#fff;color:inherit}
+input:focus-visible,button:focus-visible,a:focus-visible{outline:2px solid #8a6fb8;outline-offset:2px}
+button{min-height:50px;border-radius:999px;border:0;font:inherit;font-size:15px;font-weight:700;cursor:pointer}
+.pri{background:linear-gradient(135deg,#4a4f93,#8a6fb8);color:#fff;box-shadow:0 8px 20px rgba(74,79,147,.3)}.sec{background:#fff;color:#26303a;border:1px solid rgba(38,48,58,.2);display:flex;align-items:center;justify-content:center;gap:10px}
+button:disabled{opacity:.6}
+.or{display:flex;align-items:center;gap:10px;font-size:12px;color:#7a8490}.or::before,.or::after{content:"";flex:1;height:1px;background:rgba(38,48,58,.14)}
+#msg{min-height:20px;font-size:13.5px;color:#b3403a;font-weight:600}#msg.ok{color:#3f6a52}
+.links{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:13px}a{color:#4a60b4}
+select{min-height:48px;border-radius:12px;border:1px solid rgba(38,48,58,.2);padding:0 12px;font:inherit;font-size:16px;background:#fff;color:inherit;width:100%}
+.ck{flex-direction:row;align-items:flex-start;gap:10px;font-weight:500;line-height:1.6}.ck input{min-height:0;width:20px;height:20px;margin-top:2px;flex:none}
+.col{display:flex;flex-direction:column;gap:12px}[hidden]{display:none!important}.lk{background:none;border:0;min-height:0;padding:0;color:#4a60b4;font-size:13px;font-weight:500;text-decoration:underline;cursor:pointer}
+</style>
+</head>
+<body>
+<main>
+  <div class="brand"><img src="/icons/icon-192.png" alt=""><b>EVERWALK</b></div>
+  <h1 id="h1">로그인</h1>
+  <p id="lead">로그인하면 저장한 아이와 별조각, 아이템을 다시 불러옵니다.</p>
+  <div id="v-in" class="col">
+    <button type="button" class="sec" id="google"><svg width="20" height="20" viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>Google 로 계속하기</button>
+    <div class="or">또는</div>
+    <form id="f" novalidate class="col">
+      <label>이메일<input id="email" type="email" autocomplete="email" inputmode="email" required></label>
+      <label>비밀번호<input id="pw" type="password" autocomplete="current-password" required></label>
+      <button class="pri" id="go" type="submit">로그인</button>
+    </form>
+  </div>
+  <form id="v-up" class="col" novalidate hidden>
+    <label>이메일<input id="u-email" type="email" autocomplete="email" inputmode="email" required></label>
+    <label>비밀번호 (8자 이상)<input id="u-pw" type="password" autocomplete="new-password" minlength="8" required></label>
+    <div id="v-who" class="col">
+      <select id="u-region" hidden><option value="KR" selected>KR</option></select>
+      <label>태어난 해<select id="u-year" required><option value="">고르기</option></select></label>
+      <label class="ck"><input id="u-agree" type="checkbox"><span>만 14세 이상이며, <a href="https://datasmith.co.kr/policies/terms.html" target="_blank" rel="noopener">이용약관</a>과 <a href="https://datasmith.co.kr/policies/privacy.html" target="_blank" rel="noopener">개인정보 처리방침</a>에 동의합니다.</span></label>
+    </div>
+    <button class="pri" id="u-go" type="submit">계정 만들기</button>
+  </form>
+  <form id="v-fg" class="col" novalidate hidden>
+    <label>이메일<input id="g-email" type="email" autocomplete="email" inputmode="email" required></label>
+    <button class="pri" id="g-go" type="submit">재설정 링크 받기</button>
+  </form>
+  <form id="v-np" class="col" novalidate hidden>
+    <label>새 비밀번호 (8자 이상)<input id="n-pw" type="password" autocomplete="new-password" minlength="8" required></label>
+    <button class="pri" id="n-go" type="submit">새 비밀번호 저장</button>
+  </form>
+  <form id="v-mfa" class="col" novalidate hidden>
+    <label>6자리 코드<input id="m-code" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]*" required></label>
+    <button class="pri" id="m-go" type="submit">계속</button>
+  </form>
+  <div id="msg" role="status" aria-live="polite"></div>
+  <div class="links"><button type="button" class="lk" id="l-in" hidden>로그인</button><button type="button" class="lk" id="l-up" hidden>계정 만들기</button><button type="button" class="lk" id="l-fg">비밀번호를 잊으셨나요?</button><a href="/">로그인하지 않고 걷기</a></div>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.119.0/dist/umd/supabase.js"></script>
+<script>!function(){var e="AT BE BG HR CY CZ DK EE FI FR DE GR HU IE IT LV LT LU MT NL PL PT RO SK SI ES SE IS LI NO GB CH CU IR KP SY".split(" "),t="AF AL DZ AD AO AG AR AM AU AT AZ BS BH BD BB BY BE BZ BJ BT BO BA BW BR BN BG BF BI KH CM CA CV CF TD CL CN CO KM CG CD CR CI HR CU CY CZ DK DJ DM DO EC EG SV GQ ER EE SZ ET FJ FI FR GA GM GE DE GH GR GD GT GN GW GY HT HN HK HU IS IN ID IR IQ IE IL IT JM JP JO KZ KE KI KP KR KW KG LA LV LB LS LR LY LI LT LU MO MG MW MY MV ML MT MH MR MU MX FM MD MC MN ME MA MZ MM NA NR NP NL NZ NI NE NG MK NO OM PK PW PA PG PY PE PH PL PT PR QA RO RU RW KN LC VC WS SM ST SA SN RS SC SL SG SK SI SB SO ZA SS ES LK SD SR SE CH SY TW TJ TZ TH TL TG TO TT TN TR TM TV UG UA AE GB US UY UZ VU VE VN YE ZM ZW".split(" "),a=function(e){return document.getElementById(e)},n=a("msg"),i=a("go"),r=a("google");function o(e,t){n.textContent=e||"",n.className=t?"ok":""}var l,c="연결하지 못했습니다. 잠시 뒤에 다시 해 보시길 바랍니다.";function d(){var e=null;try{e=new URLSearchParams(location.search).get("next")}catch(e){}return e&&/^\/(?!\/)[^\\]*$/.test(e)?e:"/"}try{l=window.supabase.createClient("https://rnyfvhttbqkuaixotloc.supabase.co","sb_publishable_ORQT2nyVAI9mWN151sAc8A_leBcX5f-")}catch(e){return void o(c)}var u={in:["로그인","로그인하면 저장한 아이와 별조각, 아이템을 다시 불러옵니다."],up:["계정 만들기","아이를 저장해 두면 어느 기기에서든 이어서 만날 수 있습니다."],fg:["비밀번호 다시 정하기","이메일을 입력하시면 새 비밀번호를 정하는 링크를 보내 드립니다."],np:["새 비밀번호 정하기",""],mfa:["2단계 인증","인증 앱에 보이는 6자리 코드를 입력해 주시길 바랍니다."],who:["한 단계만 더","계정을 만들려면 아래 내용을 확인해 주시길 바랍니다."]},s="in",v=null;function f(e){try{window.dispatchEvent(new CustomEvent("ew:evt",{detail:{name:e}}))}catch(e){}}function h(e){s=e,o(""),"up"!==e&&"who"!==e||f("signup_start"),a("h1").textContent=u[e][0],a("lead").textContent=u[e][1],a("lead").hidden=!u[e][1],a("v-in").hidden="in"!==e,a("v-up").hidden=!("up"===e||"who"===e),a("v-fg").hidden="fg"!==e,a("v-np").hidden="np"!==e,a("v-mfa").hidden="mfa"!==e,a("u-email").parentNode.hidden=a("u-pw").parentNode.hidden="who"===e,a("u-go").textContent="who"===e?"Finish":"계정 만들기",a("l-in").hidden="in"===e||"who"===e||"np"===e||"mfa"===e,a("l-up").hidden="in"!==e,a("l-fg").hidden="in"!==e}function g(){var t="KR",n=+a("u-year").value;if(function(){try{return+(localStorage.getItem("ew-age-block")||0)>Date.now()}catch(e){return!1}}())return o("죄송합니다. 지금은 Everwalk 계정을 만들 수 없습니다."),null;if(e.indexOf(t)>=0)return o("Everwalk accounts aren't available where you live yet. You can still walk without signing in."),null;if(!n)return o("태어난 해를 골라 주시길 바랍니다."),null;if((new Date).getFullYear()-n<=14){try{localStorage.setItem("ew-age-block",String(Date.now()+2592e6))}catch(e){}return o("죄송합니다. 지금은 Everwalk 계정을 만들 수 없습니다."),null}if(!a("u-agree").checked)return o("이용약관과 개인정보 처리방침에 동의해 주시길 바랍니다."),null;var i=(new Date).toISOString(),r="";try{r=Intl.DateTimeFormat().resolvedOptions().timeZone||""}catch(e){}return{app:"everwalk",region:t,tz:r,consent_everwalk:{ver:"2026-11-17",age14:!0,terms_at:i,privacy_at:i},consent:{ver:"2026-11-21",age14:!0,age14_at:i,terms_at:i,privacy_at:i,marketing:!1,marketing_at:i}}}a("l-in").onclick=function(){h("in")},a("l-up").onclick=function(){h("up")},a("l-fg").onclick=function(){h("fg")},function(){var e;try{e=new Intl.DisplayNames(["en"],{type:"region"})}catch(e){}var n=t.map(function(t){var a=t;try{e&&(a=e.of(t)||t)}catch(e){}return[t,a]}).sort(function(e,t){return e[1].localeCompare(t[1])});a("u-region").insertAdjacentHTML("beforeend",n.map(function(e){return'<option value="'+e[0]+'">'+e[1].replace(/[<&"]/g,"")+"</option>"}).join(""));for(var i=(new Date).getFullYear(),r="",o=i;o>=i-100;o--)r+="<option>"+o+"</option>";a("u-year").insertAdjacentHTML("beforeend",r)}();var p=!1,m=!1;function w(){p=!0,o("들판으로 가고 있습니다",!0),location.replace(d())}async function S(e){if(!p&&e&&"np"!==s&&"who"!==s&&"mfa"!==s){try{var t=await l.auth.mfa.getAuthenticatorAssuranceLevel();if(t&&t.data&&"aal2"===t.data.nextLevel&&"aal2"!==t.data.currentLevel)return v=e,void h("mfa")}catch(e){}if(!(p||"in"!==s&&"up"!==s&&"fg"!==s)){var a=e.user_metadata||{},n=Date.now()-new Date(e.created_at||0).getTime()<3e5,i=/^\/care(\/|$)/.test(d());if(!a.consent_everwalk&&(n&&!a.consent||i))return m=!(n&&!a.consent),v=e,void h("who");f("login_ok"),w()}}}l.auth.onAuthStateChange(function(e,t){"PASSWORD_RECOVERY"!==e?!t||"SIGNED_IN"!==e&&"INITIAL_SESSION"!==e||setTimeout(function(){S(t.user)},0):h("np")}),a("v-mfa").addEventListener("submit",async function(e){e.preventDefault();var t=a("m-code").value.replace(/\D/g,""),n=a("m-go");if(6===t.length){n.disabled=!0,o("Checking",!0);try{var i=await l.auth.mfa.listFactors(),r=i&&i.data&&((i.data.totp||[])[0]||(i.data.all||[]).filter(function(e){return"verified"===e.status})[0]);if(!r)return o(c),void(n.disabled=!1);if((await l.auth.mfa.challengeAndVerify({factorId:r.id,code:t})).error)return o("코드가 맞지 않습니다. 가장 새로 나온 코드를 입력해 주시길 바랍니다."),void(n.disabled=!1);var d=v;s="in",o(""),n.disabled=!1,S(d)}catch(e){o(c),n.disabled=!1}}else o("6자리 코드를 입력해 주시길 바랍니다.")}),a("f").addEventListener("submit",async function(e){e.preventDefault();var t=a("email").value.trim(),n=a("pw").value;if(t&&n){i.disabled=!0,o("Checking",!0);try{var r=await l.auth.signInWithPassword({email:t,password:n});r.error&&o(/confirm/i.test(r.error.message||"")?"먼저 이메일 확인을 마쳐 주시길 바랍니다.":"이메일이나 비밀번호가 맞지 않습니다.")}catch(e){o(c)}i.disabled=!1}else o("이메일과 비밀번호를 입력해 주시길 바랍니다.")}),r.addEventListener("click",async function(){r.disabled=!0,o("Connecting",!0);try{var e=await l.auth.signInWithOAuth({provider:"google",options:{redirectTo:location.origin+"/login.html?next="+encodeURIComponent(d())}});e&&e.error&&(o(c),r.disabled=!1)}catch(e){o(c),r.disabled=!1}}),a("v-up").addEventListener("submit",async function(e){e.preventDefault();var t=a("u-go");if("who"!==s){var n=a("u-email").value.trim(),i=a("u-pw").value;if(!n||i.length<8)o("이메일과 8자 이상의 비밀번호를 입력해 주시길 바랍니다.");else{var r=g();if(r){t.disabled=!0,o("계정을 만들고 있습니다",!0);try{var u=await l.auth.signUp({email:n,password:i,options:{data:r,emailRedirectTo:location.origin+"/login.html?next="+encodeURIComponent(d())}});u.error?o(/registered|exists/i.test(u.error.message||"")?"이 이메일로 만든 계정이 이미 있습니다. 로그인해 보시길 바랍니다.":"계정을 만들지 못했습니다. 잠시 뒤에 다시 해 보시길 바랍니다."):(f("signup_done"),u.data.session||o("보내 드린 메일의 링크를 열면 가입이 끝납니다.",!0))}catch(e){o(c)}t.disabled=!1}}}else{var v=g();if(!v)return;m&&delete v.app,t.disabled=!0;try{if((await l.auth.updateUser({data:v})).error)o(c);else{try{await l.rpc("everwalk_trial_hold")}catch(e){}w()}}catch(e){o(c)}t.disabled=!1}}),a("v-fg").addEventListener("submit",async function(e){e.preventDefault();var t=a("g-email").value.trim();if(t){a("g-go").disabled=!0;try{await l.auth.resetPasswordForEmail(t,{redirectTo:location.origin+"/login.html"}),o("그 이메일로 만든 계정이 있으면 재설정 링크를 보내 드렸습니다.",!0)}catch(e){o(c)}a("g-go").disabled=!1}else o("이메일을 입력해 주시길 바랍니다.")}),a("v-np").addEventListener("submit",async function(e){e.preventDefault();var t=a("n-pw").value;if(t.length<8)o("8자 이상으로 정해 주시길 바랍니다.");else{a("n-go").disabled=!0;try{(await l.auth.updateUser({password:t})).error?o("그 비밀번호를 저장하지 못했습니다. 다른 비밀번호로 해 보시길 바랍니다."):(s="in",w())}catch(e){o(c)}a("n-go").disabled=!1}}),h("in")}();</script>
+<script src="/ew-traffic.js?v=1db2fd724a" defer></script>
+</body>
+</html>

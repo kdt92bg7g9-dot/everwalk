@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="ko" data-ds-service="pet" data-ds-lang="kr">
+<head><script>try{localStorage.setItem("ds-lang-last","kr")}catch(t){}</script>
+<meta charset="utf-8">
+<script>/[?&]rec=1(&|$)/.test(location.search)&&document.documentElement.classList.add("rec");</script>
+<script src="/move.js?v=9f87a550f2"></script>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://datasmith.co.kr https://fonts.googleapis.com https://cdn.jsdelivr.net; font-src 'self' data: https://datasmith.co.kr https://fonts.gstatic.com https://cdn.jsdelivr.net; img-src 'self' data: blob:; connect-src 'self' https://rnyfvhttbqkuaixotloc.supabase.co wss://rnyfvhttbqkuaixotloc.supabase.co; object-src 'none'; base-uri 'self'; form-action 'self'">
+<title>Everwalk</title>
+<meta name="description" content="Everwalk — 무지개 다리 너머 들판에서 먼저 떠난 반려동물과 다시 걷는 공간">
+<meta name="theme-color" content="#cfe6f8">
+<link rel="icon" href="/icons/icon.svg?v=ac65ba83ab" type="image/svg+xml">
+<link rel="icon" href="/icons/favicon-32.png?v=ae45dda607" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png?v=2ac0110770">
+<link rel="manifest" href="/manifest.webmanifest?v=d204293c90">
+<meta name="apple-mobile-web-app-title" content="Everwalk">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="stylesheet" href="https://datasmith.co.kr/fonts/pretendard/pretendardvariable-dynamic-subset.min.css?v=80e2dfd22f">
+<style>
+
+:root{
+  --sky:#eaf3fb; --ink:#26303a; --ink2:#55606b; --glass:rgba(255,255,255,.82); --line:rgba(255,255,255,.95);
+  --acc:#4a4f93; --acc2:#3c4180; --on:#ffffff; --soft:rgba(74,79,147,.12);   
+  --font:'Pretendard Variable',Pretendard,-apple-system,'Apple SD Gothic Neo','Malgun Gothic',system-ui,sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;overflow:hidden;background:var(--sky);font-family:var(--font);color:var(--ink);touch-action:none;-webkit-user-select:none;user-select:none;-webkit-font-smoothing:antialiased;letter-spacing:-.01em}
+#c{position:fixed;inset:0;width:100%;height:100%;display:block}
+button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
+button:focus-visible,input:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+.hidden{display:none!important}
+.screen{position:fixed;inset:0;pointer-events:none}
+.screen > *{pointer-events:auto}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:0 22px;border-radius:12px;font-size:15px;font-weight:600;background:var(--glass);border:1px solid rgba(38,48,58,.12);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.btn.primary{background:var(--acc);color:var(--on);border-color:var(--acc)}
+.btn.primary:active{background:var(--acc2)}
+.btn:active{transform:scale(.98)}
+
+#loading{position:fixed;inset:0;display:grid;place-items:center;background:var(--sky);z-index:60;transition:opacity .8s;color:var(--ink2);font-size:14px}
+#closed{position:fixed;inset:0;display:grid;place-items:center;background:var(--sky);z-index:59;padding:24px;text-align:center;line-height:1.7}
+
+
+#savebar{position:fixed;left:0;right:0;top:0;z-index:40;display:flex;justify-content:center;padding:calc(10px + env(safe-area-inset-top)) 12px 0;pointer-events:none}
+#savebar .in{pointer-events:auto;display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.9);border:1px solid rgba(38,48,58,.1);border-radius:999px;padding:6px 6px 6px 16px;box-shadow:0 6px 20px rgba(40,60,90,.12);font-size:13px;color:var(--ink2);max-width:100%}
+#savebar .in b{color:var(--ink);font-weight:600}
+#savebar .btn{min-height:36px;padding:0 16px;border-radius:999px;font-size:13.5px}
+#savebar{flex-direction:column;align-items:center;gap:6px}
+#loadLink{pointer-events:auto;min-height:40px;padding:0 16px;border-radius:999px;background:rgba(255,255,255,.82);border:1px solid rgba(38,48,58,.1);color:var(--acc);font-size:13px;font-weight:600;box-shadow:0 4px 14px rgba(40,60,90,.1)}
+
+
+#intro{display:flex;flex-direction:column;justify-content:flex-end;align-items:center;padding:0 20px calc(28px + env(safe-area-inset-bottom));background:linear-gradient(to top,rgba(250,252,255,.94) 0%,rgba(250,252,255,.6) 30%,rgba(250,252,255,0) 50%)}
+#intro .title{max-width:520px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:10px;opacity:0;transform:translateY(12px);transition:opacity 1.2s,transform 1.2s;pointer-events:none}
+#intro.show .title{opacity:1;transform:none;pointer-events:auto}
+.brand{font-size:13px;letter-spacing:.32em;font-weight:600;color:var(--ink2)}
+h1{font-size:clamp(26px,7vw,40px);line-height:1.3;margin:0;font-weight:700;text-wrap:balance;letter-spacing:-.02em}
+.lead{margin:0;font-size:15px;line-height:1.7;color:var(--ink2);text-wrap:balance}
+#notice{font-size:13px;color:var(--ink2);background:rgba(255,255,255,.75);border-radius:10px;padding:8px 12px}
+#skipHint{position:absolute;top:calc(122px + env(safe-area-inset-top));left:50%;transform:translateX(-50%);font-size:13px;color:#fff;text-shadow:0 1px 6px rgba(0,0,0,.3);pointer-events:none;transition:opacity .6s;white-space:nowrap}
+
+
+#setup{display:flex;justify-content:flex-end;flex-direction:column}
+.sheet{background:rgba(255,255,255,.9);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-top:1px solid var(--line);border-radius:20px 20px 0 0;max-height:60%;display:flex;flex-direction:column;box-shadow:0 -10px 40px rgba(40,60,90,.12)}
+.tabs{display:flex;gap:4px;padding:10px 12px 0;border-bottom:1px solid rgba(38,48,58,.08)}
+.tabs button{flex:1;min-height:42px;font-size:13px;padding:0 2px;white-space:nowrap;font-weight:600;color:var(--ink2);border-bottom:2px solid transparent}
+.tabs button[aria-selected=true]{color:var(--acc);border-bottom-color:var(--acc)}
+.sheet .scroll{overflow-y:auto;padding:16px 16px 8px;display:flex;flex-direction:column;gap:16px;touch-action:pan-y;-webkit-overflow-scrolling:touch}
+.field{display:flex;flex-direction:column;gap:8px}
+.field > .lab,.field > label{font-size:13px;color:var(--ink2);font-weight:500;display:flex;justify-content:space-between}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+input[type=text],input[type=search]{height:46px;border-radius:12px;border:1px solid rgba(38,48,58,.15);background:#fff;padding:0 14px;font:inherit;font-size:16px;color:var(--ink);width:100%;-webkit-user-select:text;user-select:text}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{min-height:36px;padding:0 13px;border-radius:999px;background:#fff;border:1px solid rgba(38,48,58,.14);font-size:13.5px}
+.chip[aria-pressed=true]{background:var(--acc);color:var(--on);border-color:var(--acc)}
+.blist{max-height:180px;overflow-y:auto;touch-action:pan-y;border:1px solid rgba(38,48,58,.1);border-radius:12px;padding:8px;background:rgba(255,255,255,.7)}
+.sw{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.sw button{width:30px;height:30px;border-radius:50%;border:2px solid #fff;box-shadow:0 0 0 1px rgba(38,48,58,.2)}
+.sw button[aria-pressed=true]{box-shadow:0 0 0 2px var(--acc)}
+.sw input[type=color]{width:34px;height:34px;border:0;padding:0;background:none;border-radius:50%}
+input[type=range]{width:100%;accent-color:var(--acc)}
+.hint{font-size:12.5px;color:var(--ink2);margin:0;line-height:1.6}
+.sheet .foot{padding:10px 16px calc(12px + env(safe-area-inset-bottom));border-top:1px solid rgba(38,48,58,.06)}
+.sheet .foot .btn{width:100%}
+@media (min-width:820px) and (orientation:landscape){
+  #setup{flex-direction:row;justify-content:flex-end;align-items:stretch;padding:72px 18px 18px}
+  .sheet{width:420px;max-height:none;border-radius:20px;border:1px solid var(--line)}
+}
+
+
+.topbar{position:absolute;left:0;right:0;top:calc(12px + env(safe-area-inset-top));padding:0 12px;display:flex;justify-content:space-between;align-items:center;gap:8px;pointer-events:none}
+.topbar > *{pointer-events:auto}
+.pill{height:38px;padding:0 14px;border-radius:999px;display:inline-flex;align-items:center;gap:7px;background:rgba(30,40,60,.38);color:#fff;font-size:13.5px;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.35)}
+.pill .dot{width:7px;height:7px;border-radius:50%;background:#ffd97a;box-shadow:0 0 8px #ffd97a}
+.topbar .right{display:flex;gap:6px;align-items:center}
+.topbar .left{display:flex;gap:6px;align-items:center;min-width:0}
+.pill{white-space:nowrap;flex:0 0 auto}
+
+body.sbOn .topbar{top:calc(58px + env(safe-area-inset-top))}
+body.sbOn #petSwitch{top:calc(104px + env(safe-area-inset-top))}
+body.sbOn #caption{top:calc(150px + env(safe-area-inset-top))}
+@media (max-width:520px){#placePill{display:none}.pill{padding:0 12px;font-size:13px}.topbar .right{gap:5px}}
+.icon{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:rgba(30,40,60,.38);border:1px solid rgba(255,255,255,.35);color:#fff;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.icon svg{width:19px;height:19px}
+#joy{position:absolute;left:16px;bottom:calc(30px + env(safe-area-inset-bottom));width:124px;height:124px;border-radius:50%;background:rgba(255,255,255,.22);border:1.5px solid rgba(255,255,255,.75);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);touch-action:none}
+#knob{position:absolute;left:50%;top:50%;width:52px;height:52px;margin:-26px 0 0 -26px;border-radius:50%;background:rgba(255,255,255,.95);box-shadow:0 4px 14px rgba(40,50,90,.25)}
+#actions{position:absolute;right:16px;bottom:calc(24px + env(safe-area-inset-bottom));display:grid;grid-template-columns:repeat(2,72px);gap:8px}
+#actions button{width:72px;height:64px;border-radius:16px;background:var(--glass);border:1px solid var(--line);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:11.5px;font-weight:600;color:var(--ink);box-shadow:0 6px 18px rgba(40,60,90,.14);white-space:nowrap}
+#actions button svg{width:22px;height:22px;color:var(--acc)}
+#actions button:active{transform:scale(.95)}
+#actions button[disabled]{opacity:.45}
+#hint{position:absolute;left:50%;bottom:calc(170px + env(safe-area-inset-bottom));transform:translateX(-50%);font-size:13px;color:#fff;text-shadow:0 1px 8px rgba(0,0,0,.35);white-space:nowrap;transition:opacity 1s;pointer-events:none}
+
+
+#chat{position:fixed;left:0;right:0;bottom:0;max-height:52%;display:flex;flex-direction:column;background:rgba(255,255,255,.92);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:20px 20px 0 0;box-shadow:0 -10px 40px rgba(40,60,90,.15);padding:12px 14px calc(12px + env(safe-area-inset-bottom));gap:10px;z-index:30}
+#chat .head{display:flex;justify-content:space-between;align-items:center;font-size:15px;font-weight:700}
+#chat .head button{font-size:13px;color:var(--ink2);min-height:36px;padding:0 6px}
+#chatLog{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:8px;min-height:60px;touch-action:pan-y;padding:2px}
+.msg{max-width:80%;padding:9px 13px;border-radius:16px;font-size:14.5px;line-height:1.55;word-break:keep-all;overflow-wrap:anywhere}
+.msg.me{align-self:flex-end;background:var(--acc);color:var(--on);border-bottom-right-radius:4px}
+.msg.pet{align-self:flex-start;background:#f2f4f6;border-bottom-left-radius:4px}
+.msg.typing{color:var(--ink2)}
+#quick{display:flex;gap:6px;overflow-x:auto;touch-action:pan-x;padding-bottom:2px}
+#quick button{flex:0 0 auto}
+#chat .r{display:flex;gap:8px}
+#chat .r input{flex:1}
+#chat .r .btn{min-height:46px;padding:0 16px}
+#chat .lantern{font-size:13px;color:var(--acc);font-weight:600;min-height:36px;align-self:flex-start}
+
+#petSwitch{position:absolute;left:12px;right:12px;top:calc(58px + env(safe-area-inset-top));display:flex;gap:6px;overflow-x:auto;touch-action:pan-x;pointer-events:auto}
+#petSwitch button{flex:0 0 auto;height:32px;padding:0 12px;border-radius:999px;background:rgba(30,40,60,.38);color:#fff;font-size:12.5px;font-weight:600;border:1px solid rgba(255,255,255,.35)}
+#petSwitch button[aria-pressed=true]{background:var(--acc);border-color:var(--acc)}
+textarea{border-radius:12px;border:1px solid rgba(38,48,58,.15);background:#fff;padding:10px 14px;font:inherit;font-size:16px;color:var(--ink);width:100%;resize:vertical;-webkit-user-select:text;user-select:text}
+input[type=date]{height:46px;border-radius:12px;border:1px solid rgba(38,48,58,.15);background:#fff;padding:0 12px;font:inherit;font-size:15px;color:var(--ink);width:100%}
+.photoRow{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.photoRow img{width:72px;height:72px;border-radius:14px;object-fit:cover}
+.pubRow{display:flex;gap:10px;align-items:flex-start;font-size:13px;line-height:1.6;color:var(--ink2);background:var(--soft);border-radius:12px;padding:12px}
+.pubRow input{width:22px;height:22px;margin-top:2px;accent-color:var(--acc);flex:0 0 auto}
+.pubRow b{color:var(--ink)}
+.pcard{display:flex;flex-direction:column;gap:10px}
+.pcard .ph{width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:14px;background:var(--soft)}
+.pcard .nm{font-size:20px;font-weight:700}
+.pcard .meta{font-size:13px;color:var(--ink2)}
+.pcard .tags{display:flex;flex-wrap:wrap;gap:6px}
+.pcard .tags span{font-size:12px;padding:4px 10px;border-radius:999px;background:var(--soft);color:var(--acc)}
+.pcard .intro{font-size:14.5px;line-height:1.6;white-space:pre-wrap;word-break:keep-all}
+.msg.other{align-self:flex-start;background:#eef4f2;border-bottom-left-radius:4px}
+.msg.other b{display:block;font-size:11.5px;color:var(--acc)}
+.msg b.who{display:block;font-size:11.5px;font-weight:600;opacity:.82;margin-bottom:1px}.msg.pet b.who{color:var(--acc);opacity:1}
+.shareAll{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ink2);min-height:32px;cursor:pointer}.shareAll input{width:18px;height:18px;margin:0;accent-color:var(--acc)}
+#tagPill{position:absolute;left:50%;top:calc(146px + env(safe-area-inset-top));transform:translateX(-50%);pointer-events:none}
+
+#playSheet{position:fixed;left:0;right:0;bottom:0;max-height:58%;overflow-y:auto;touch-action:pan-y;background:rgba(255,255,255,.94);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:20px 20px 0 0;box-shadow:0 -10px 40px rgba(40,60,90,.15);padding:12px 14px calc(14px + env(safe-area-inset-bottom));z-index:31;display:flex;flex-direction:column;gap:12px}
+#playSheet .head{display:flex;justify-content:space-between;align-items:center;font-size:15px;font-weight:700}
+#playSheet .head button{font-size:13px;color:var(--ink2);min-height:36px;padding:0 6px}
+#playGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+#playGrid button{min-height:72px;border-radius:14px;background:#fff;border:1px solid rgba(38,48,58,.1);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;font-size:12px;font-weight:600;color:var(--ink)}
+#playGrid button svg{width:24px;height:24px;color:var(--acc)}
+#playGrid button:active{background:var(--soft)}
+#snackBox .lab{font-size:13px;color:var(--ink2);margin-bottom:8px}
+#tugUI{position:fixed;left:50%;bottom:calc(200px + env(safe-area-inset-bottom));transform:translateX(-50%);width:min(86vw,360px);background:rgba(255,255,255,.92);border-radius:16px;padding:12px;display:flex;flex-direction:column;gap:10px;box-shadow:0 8px 24px rgba(40,60,90,.18);z-index:32}
+#tugUI .lab{font-size:13px;color:var(--ink2);text-align:center}
+#tugUI .bar{height:12px;border-radius:6px;background:rgba(38,48,58,.12);overflow:hidden}
+#tugUI .bar i{display:block;height:100%;width:50%;background:var(--acc);border-radius:6px}
+#tugUI .btn{min-height:56px;font-size:17px}
+#photoImg{width:100%;border-radius:12px;display:block}
+.zz{position:absolute;left:0;top:0;font-size:18px;font-weight:700;color:#fff;text-shadow:0 1px 6px rgba(0,0,0,.3);animation:floatUp 2s ease-out forwards}
+
+
+#labels,#fx{position:fixed;inset:0;pointer-events:none;overflow:hidden}
+.lbl{position:absolute;left:0;top:0;will-change:transform;white-space:nowrap}
+.tag{display:inline-flex;align-items:center;gap:6px;height:26px;padding:0 11px 0 4px;border-radius:999px;background:rgba(30,40,60,.48);border:1px solid rgba(255,255,255,.5);color:#fff;font-size:12.5px;font-weight:500;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.tag.plain{padding-left:11px}
+.tag .me{width:19px;height:19px;border-radius:50%;background:#ffd97a;color:#4a3a14;display:grid;place-items:center;font-size:10.5px;font-weight:700}
+.ptag{font-size:11.5px;font-weight:600;color:#fff;background:rgba(74,79,147,.8);padding:3px 9px;border-radius:999px}
+.bubble{max-width:230px;white-space:normal;background:#fff;color:var(--ink);padding:9px 13px;border-radius:14px;font-size:14px;line-height:1.5;box-shadow:0 6px 18px rgba(40,50,90,.18);text-align:center;word-break:keep-all;overflow-wrap:anywhere}
+.bubble.pet{background:#fffaf0;border:1px solid #f3e2c0}
+.heart{position:absolute;left:0;top:0;width:20px;height:20px;animation:floatUp 1.6s ease-out forwards}
+@keyframes floatUp{0%{opacity:0;transform:var(--p) translateY(0) scale(.6)}15%{opacity:1}100%{opacity:0;transform:var(--p) translateY(-80px) scale(1.1)}}
+
+#caption{position:fixed;left:0;right:0;top:calc(104px + env(safe-area-inset-top));text-align:center;font-size:clamp(19px,5vw,26px);font-weight:700;color:#fff;text-shadow:0 2px 16px rgba(30,40,80,.5);opacity:0;transition:opacity 1s;pointer-events:none;padding:0 24px;text-wrap:balance}
+#caption.on{opacity:1}
+#toast{position:fixed;left:50%;top:calc(104px + env(safe-area-inset-top));transform:translateX(-50%) translateY(-8px);background:rgba(255,255,255,.95);border-radius:999px;padding:9px 16px;font-size:13px;box-shadow:0 6px 20px rgba(40,60,90,.15);opacity:0;transition:all .5s;pointer-events:none;white-space:nowrap;z-index:50}
+#toast.on{opacity:1;transform:translateX(-50%)}
+#fade{position:fixed;inset:0;background:#fbfdff;opacity:0;pointer-events:none;transition:opacity .9s ease;z-index:45}
+#fade.on{opacity:1}
+#dialog{position:fixed;inset:0;background:rgba(40,36,84,.38);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);display:grid;place-items:center;z-index:70;padding:20px}
+#dialog .box{background:rgba(255,255,255,.9);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);border:1px solid rgba(255,255,255,.9);box-shadow:0 22px 60px rgba(40,30,80,.28);border-radius:22px;max-width:400px;width:100%;max-height:88vh;overflow-y:auto;touch-action:pan-y;padding:20px;display:flex;flex-direction:column;gap:12px;font-size:14px;line-height:1.7}
+#dialog .box h3{margin:0;font-size:17px}
+#dialog .box .r{display:flex;gap:8px;justify-content:flex-end}
+#dialog a{color:var(--acc)}
+
+#starPill{cursor:pointer;font:inherit;color:inherit;gap:5px;padding:0 11px}
+#placeBtn,#placePill{cursor:pointer;font:inherit;color:#fff}
+#dialog .frow .fi span{display:block}
+#starPill svg{color:#ffd24a}#starPill b{color:#fff;font-weight:700}
+#starPill.bump{animation:wbump .5s ease}
+#topLinks{position:absolute;right:12px;top:calc(58px + env(safe-area-inset-top));display:flex;gap:6px}
+#topLinks .icon{width:34px;height:34px;text-decoration:none}
+body.sbOn #topLinks{top:calc(104px + env(safe-area-inset-top))}
+#petSwitch{right:96px!important}
+.introLinks{margin:10px 0 0;font-size:13px}.introLinks a{color:inherit;text-decoration:underline;display:inline-block;padding:10px 4px}
+html.rec #topLinks,html.rec .introLinks{display:none!important}
+
+html.rec #savebar,html.rec #loadLink,html.rec .topbar,html.rec #petSwitch,html.rec #toast,html.rec #caption,html.rec #notice,html.rec #hint,html.rec #skipHint,html.rec #friendDot{display:none!important}
+html.rec #joy,html.rec #actions{opacity:0!important}
+
+#warmPill{cursor:pointer;font:inherit;color:inherit;gap:6px}
+#warmPill svg{color:#ff8fa3}
+#warmPill b{color:#fff;font-weight:700}
+#warmPill.bump{animation:wbump .5s ease}
+@keyframes wbump{0%{transform:scale(1)}40%{transform:scale(1.12)}100%{transform:scale(1)}}
+@media (prefers-reduced-motion:reduce){#warmPill.bump{animation:none}}
+#dialog .skybar{height:12px;border-radius:999px;background:rgba(38,48,58,.1);overflow:hidden;margin:6px 0 4px}
+#dialog .skybar i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,#ff9b9b,#ffd48a,#a4e6a0,#8fd2ff,#cfa6ff)}
+#dialog .wv{font-size:17px}
+#dialog .lanrow{display:flex;gap:6px;margin:4px 0 6px}
+#dialog .lanrow input{flex:1;min-width:0;min-height:40px;border-radius:12px;border:1px solid rgba(38,48,58,.18);padding:0 12px;font:inherit;font-size:14px}
+#dialog .mkchk{display:flex;gap:8px;align-items:flex-start;font-size:12.5px;line-height:1.55;color:var(--ink2);margin-top:6px}
+#dialog .mkchk input{width:20px;height:20px;flex:0 0 auto;margin-top:1px}
+
+#friendBtn{position:relative}
+#friendDot{position:absolute;top:3px;right:3px;width:9px;height:9px;border-radius:50%;background:#ffd97a;box-shadow:0 0 0 2px rgba(30,40,60,.5)}
+#dialog .glab{font-size:12.5px;font-weight:700;color:var(--ink2);margin:6px 0 2px}
+#dialog .bond{padding:9px 0 10px;border-top:1px solid rgba(38,48,58,.1)}
+#dialog .bond .bh{display:flex;align-items:baseline;justify-content:space-between;gap:8px}
+#dialog .bond .bh b{font-size:15px}
+#dialog .bond .blv{font-size:12.5px;font-weight:700;color:var(--acc2)}
+#dialog .bbar{height:10px;border-radius:999px;background:rgba(38,48,58,.1);overflow:hidden;margin:6px 0 4px}
+#dialog .bbar i{display:block;height:100%;border-radius:999px;background:var(--acc2)}
+#dialog .bbar.g i{background:linear-gradient(90deg,#a4e6a0,#ffd48a)}
+#dialog .bond .bn{font-size:12px;color:var(--ink2)}
+#dialog .gchips{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}
+#dialog .gchips span{font-size:11.5px;border-radius:999px;padding:3px 9px;background:rgba(38,48,58,.07);color:var(--ink2)}
+#dialog .gchips span.on{background:var(--acc2);color:#fff}
+#dialog .gchips span.nx{background:transparent;box-shadow:inset 0 0 0 1.5px var(--acc2);color:var(--acc2);font-weight:700}
+#dialog .gnote{margin:4px 0 0;font-size:12.5px;color:var(--ink2)}
+#dialog .frow{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 0;border-top:1px solid rgba(38,48,58,.1)}
+#dialog .frow .fi{display:flex;flex-direction:column;min-width:0}
+#dialog .frow .fi span{font-size:12.5px;color:var(--ink2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#dialog .frow .fi .on{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--acc2);margin-right:5px;vertical-align:1px}
+#dialog .frow .fb{display:flex;gap:6px;flex:0 0 auto}
+#dialog .btn.mini{min-height:36px;padding:0 12px;border-radius:999px;font-size:13px;text-decoration:none}
+#dialog .btn.primary{background:var(--acc);color:var(--on);border-color:var(--acc)}
+#dialog .chip:disabled{opacity:.5}
+
+#dialog .shopGo{display:flex;align-items:center;gap:12px;width:100%;margin-top:14px;padding:12px 14px;border-radius:16px;border:1px solid rgba(38,48,58,.12);background:linear-gradient(135deg,#fff7df,#ffeef4 55%,#eaf4ff);text-align:left;font:inherit;color:inherit;cursor:pointer}
+#dialog .shopGo .sgI{flex:0 0 auto;width:44px;height:44px;border-radius:14px;background:#fff;display:grid;place-items:center;font-size:24px;color:#e8a920;box-shadow:0 2px 8px rgba(38,48,58,.1)}
+#dialog .shopGo .sgT{display:flex;flex-direction:column;min-width:0;flex:1}
+#dialog .shopGo .sgT b{font-size:15px}
+#dialog .shopGo .sgT span{font-size:12px;color:var(--ink2);line-height:1.45}
+#dialog .shopGo .sgA{font-size:24px;color:var(--ink2)}
+#shopBox{display:flex;flex-direction:column;gap:10px}
+#shopBox .shopTop{display:flex;align-items:center;gap:10px;font-size:12px;color:var(--ink2);line-height:1.45;padding:10px 12px;border-radius:14px;background:linear-gradient(135deg,#fff7df,#ffeef4 55%,#eaf4ff)}
+#shopBox .bal{flex:0 0 auto;display:inline-flex;align-items:center;gap:5px;min-height:34px;padding:0 12px;border-radius:999px;background:#fff;color:#c98a10;font-size:16px;box-shadow:0 2px 8px rgba(38,48,58,.1)}
+#shopBox .bal b{color:var(--ink,#26303a)}
+#shopBox .shopTabs{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px;scrollbar-width:none}
+#shopBox .shopTabs::-webkit-scrollbar{display:none}
+#shopBox .shopTabs button{flex:0 0 auto;min-height:38px;padding:0 13px;border-radius:999px;border:1px solid rgba(38,48,58,.14);background:#fff;font:inherit;font-size:13.5px;color:inherit;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+#shopBox .shopTabs button i{font-style:normal;font-size:11px;opacity:.65}
+#shopBox .shopTabs button[aria-selected=true]{background:var(--acc);color:var(--on);border-color:var(--acc)}
+#shopBox .shopGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+#shopBox .scard{position:relative;display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 4px 8px;border-radius:16px;border:1.5px solid rgba(38,48,58,.1);background:#fbfaf7;font:inherit;color:inherit;cursor:pointer;min-width:0}
+#shopBox .scard[aria-pressed=true]{border-color:var(--acc);background:#fff;box-shadow:0 4px 14px rgba(38,48,58,.12)}
+#shopBox .sico{width:56px;height:56px;border-radius:16px;display:grid;place-items:center;background:radial-gradient(circle at 50% 40%,#f2f7fc,#d3e2f0)}
+#shopBox .sico svg{width:44px;height:44px}
+#shopBox .sico.big{flex:0 0 auto;width:64px;height:64px}
+#shopBox .sico.big svg{width:52px;height:52px}
+#shopBox .snm{font-size:12.5px;font-weight:700;line-height:1.3;text-align:center;word-break:keep-all}
+#shopBox .spr{display:inline-flex;align-items:center;gap:3px;min-height:22px;padding:0 9px;border-radius:999px;background:#fff3cf;color:#8a5a00;font-size:12px;font-weight:700}
+#shopBox .scard.own .spr{background:rgba(38,48,58,.07);color:var(--ink2)}
+#shopBox .scard.use .spr{background:var(--acc);color:var(--on)}
+#shopBox .shopSel{position:sticky;bottom:-20px;display:flex;align-items:center;gap:10px;padding:10px;border-radius:16px;background:#fff;border:1px solid rgba(38,48,58,.12);box-shadow:0 -6px 16px rgba(38,48,58,.08);flex-wrap:wrap}
+#shopBox .ssT{display:flex;flex-direction:column;flex:1;min-width:120px}
+#shopBox .ssT b{font-size:15px}
+#shopBox .ssT span{font-size:12px;color:var(--ink2);line-height:1.45}
+#shopBox #shopAct{flex:1 1 100%;min-height:44px;font-size:14px;font-weight:700}
+#shopBox #shopAct:disabled{opacity:.55}
+#shopBox .spr.goal{background:#e6f0ff;color:#2f5a9a}
+#shopBox .ssT .ssG{color:#2f5a9a;font-weight:700}
+
+#topLinks button.icon{cursor:pointer;font:inherit;padding:0}
+#a2Box{display:flex;flex-direction:column;gap:12px;align-items:center;text-align:center}
+#a2Box .a2I{width:84px;height:84px;border-radius:20px;box-shadow:0 6px 18px rgba(38,48,58,.18)}
+#a2Box p{margin:0}
+#a2Box .a2How{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;padding:12px 14px;border-radius:14px;background:#f2f6fa;font-size:13px;font-weight:700}
+#a2Box .a2How span{display:inline-flex;align-items:center;gap:5px;min-height:34px;padding:0 10px;border-radius:10px;background:#fff;border:1px solid rgba(38,48,58,.14)}
+#a2Box .a2How span.k{min-width:34px;justify-content:center;box-shadow:0 2px 0 rgba(38,48,58,.2);animation:a2key 2.4s infinite}
+#a2Box .a2How span.k2{animation-delay:.25s}
+#a2Box .a2How span.go{animation:a2pulse 2.4s infinite}
+#a2Box .a2How em{font-style:normal;color:var(--ink2)}
+#a2Box .a2How img{width:26px;height:26px;border-radius:7px}
+@keyframes a2key{0%,18%{background:#4a4f93;color:#fff;transform:translateY(2px);box-shadow:none}24%,100%{background:#fff;color:inherit;transform:none}}
+@keyframes a2pulse{0%,40%{box-shadow:0 0 0 0 rgba(74,79,147,.45)}80%,100%{box-shadow:0 0 0 9px rgba(74,79,147,0)}}
+@media (prefers-reduced-motion:reduce){#a2Box .a2How span{animation:none!important}}
+
+#howto{position:absolute;left:50%;bottom:calc(176px + env(safe-area-inset-bottom));transform:translateX(-50%);width:min(360px,calc(100vw - 32px));background:rgba(255,255,255,.96);color:#26303a;border-radius:20px;padding:16px;display:flex;flex-direction:column;gap:12px;box-shadow:0 10px 30px rgba(20,30,40,.25);z-index:30;animation:hwin .5s ease;transition:opacity .45s,transform .45s}
+#howto.out{opacity:0;transform:translate(-50%,12px)}
+#howto>b{font-size:16px;text-align:center}
+#howto .hwRow{display:flex;flex-direction:column;gap:10px}
+#howto .hwItem{display:flex;align-items:center;gap:12px;font-size:13.5px;line-height:1.5}
+#howto .hwPic{flex:0 0 auto;width:76px;height:56px;border-radius:14px;background:#eef3f7;display:grid;place-items:center}
+#howto .hwKeys{display:grid;grid-template-columns:repeat(3,18px);grid-template-rows:repeat(2,18px);gap:3px}
+#howto .hwKeys i{font-style:normal;font-size:11px;line-height:18px;text-align:center;border-radius:5px;background:#fff;border:1px solid rgba(38,48,58,.22);box-shadow:0 1.5px 0 rgba(38,48,58,.2);animation:hwkey 3.2s infinite}
+#howto .hwKeys .k1{grid-column:2;grid-row:1}
+#howto .hwKeys .k2{grid-column:1;grid-row:2;animation-delay:.8s}
+#howto .hwKeys .k3{grid-column:2;grid-row:2;animation-delay:1.6s}
+#howto .hwKeys .k4{grid-column:3;grid-row:2;animation-delay:2.4s}
+@keyframes hwkey{0%,22%{background:#4a4f93;color:#fff;transform:translateY(1.5px);box-shadow:none}25%,100%{background:#fff;color:inherit;transform:none}}
+#howto .hwJoy{width:40px;height:40px;border-radius:50%;background:rgba(38,48,58,.14);border:1.5px solid rgba(38,48,58,.25);position:relative}
+#howto .hwJoy i{position:absolute;left:50%;top:50%;width:18px;height:18px;margin:-9px;border-radius:50%;background:#4a4f93;animation:hwjoy 3s ease-in-out infinite}
+@keyframes hwjoy{0%,100%{transform:translate(0,0)}20%{transform:translate(0,-10px)}45%{transform:translate(10px,-4px)}70%{transform:translate(-9px,5px)}}
+#howto .hwDrag{width:60px;height:36px;border-radius:10px;border:1.5px dashed rgba(38,48,58,.3);position:relative}
+#howto .hwDrag i{position:absolute;top:50%;left:6px;width:14px;height:14px;margin-top:-7px;border-radius:50%;background:#4a4f93;animation:hwdrag 2.6s ease-in-out infinite}
+@keyframes hwdrag{0%,100%{transform:translateX(0)}50%{transform:translateX(32px)}}
+@keyframes hwin{0%{opacity:0;transform:translate(-50%,14px)}100%{opacity:1;transform:translate(-50%,0)}}
+#howto .btn{min-height:42px;border-radius:999px;background:var(--acc);color:var(--on);border:0;font:inherit;font-weight:700;cursor:pointer}
+html.rec #howto{display:none!important}
+@media (prefers-reduced-motion:reduce){#howto,#howto i{animation:none!important}}
+
+#starPill{position:relative}
+#starPill.guide::after{content:"";position:absolute;inset:-4px;border-radius:999px;border:2px solid #ffd24a;animation:gring 1.4s ease-out infinite;pointer-events:none}
+@keyframes gring{0%{transform:scale(.9);opacity:1}100%{transform:scale(1.35);opacity:0}}
+#giftBox{display:flex;flex-direction:column;gap:10px;align-items:center}
+#giftBox .gfI{width:96px;height:96px;border-radius:28px;display:grid;place-items:center;background:radial-gradient(circle at 50% 40%,#fff7df,#ffe3ee);animation:gfpop .7s cubic-bezier(.2,1.6,.4,1)}
+#giftBox .gfI svg{width:76px;height:76px}
+@keyframes gfpop{0%{transform:scale(.3);opacity:0}100%{transform:scale(1);opacity:1}}
+#giftBox .gfHow{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:14px;background:#f2f6fa}
+#giftBox .gfPill{position:relative;display:inline-flex;align-items:center;gap:5px;min-height:34px;padding:0 12px;border-radius:999px;background:#3a4a5c;color:#ffd24a;font-size:15px}
+#giftBox .gfPill b{color:#fff}
+#giftBox .gfTap{position:absolute;right:-4px;bottom:-8px;width:18px;height:18px;border-radius:50%;background:rgba(74,79,147,.85);border:2px solid #fff;animation:gftap 1.6s ease-in-out infinite}
+@keyframes gftap{0%,100%{transform:translate(8px,8px) scale(1);opacity:.4}45%{transform:translate(0,0) scale(1)}55%{transform:translate(0,0) scale(.72);opacity:1}70%{transform:translate(0,0) scale(1)}}
+#giftBox .gfArrow{font-size:22px;color:var(--ink2)}
+#giftBox .gfShop{display:inline-flex;align-items:center;min-height:34px;padding:0 12px;border-radius:12px;background:linear-gradient(135deg,#fff7df,#ffeef4 55%,#eaf4ff);font-weight:700;font-size:13.5px;border:1px solid rgba(38,48,58,.12)}
+@media (prefers-reduced-motion:reduce){#starPill.guide::after,#giftBox .gfTap,#giftBox .gfI{animation:none}}
+@media (prefers-reduced-motion:reduce){.heart{animation-duration:.01s}}
+</style>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
+</head>
+<body>
+<canvas id="c" aria-label="Everwalk 들판"></canvas>
+<div id="labels"></div>
+<div id="fx"></div>
+<div id="loading">들판을 준비하고 있습니다</div>
+<div id="closed" class="hidden"><div><b>Everwalk</b><p id="closedMsg">지금은 잠시 문을 닫았습니다. 조금 뒤에 다시 와 주시길 바랍니다.</p></div></div>
+
+<div id="savebar" class="hidden"><div class="in"><span id="saveState"><b>저장하지 않은 프로필</b> · 이 기기에만 있습니다</span><button class="btn primary" id="saveBtn" type="button">저장하기</button></div><button id="loadLink" class="hidden" type="button">저장한 프로필이 있나요? 로그인해서 불러오기</button></div>
+
+<div id="intro" class="screen">
+  <div id="skipHint">화면을 누르면 바로 시작합니다</div>
+  <div class="title">
+    <div class="brand">EVERWALK</div>
+    <h1>무지개 다리 너머,<br>다시 함께 걷는 길</h1>
+    <p class="lead">먼저 떠난 아이들이 뛰어노는 푸른 들판이 있습니다.<br>오늘은 우리 아이와 같이 걸어 보시길 바랍니다.</p>
+    <div id="notice" class="hidden"></div>
+    <button id="goSetup" class="btn primary" type="button">우리 아이 만나러 가기</button>
+    <p class="introLinks"><a href="/" data-ew-branch>처음 화면으로</a> · <a href="https://www.instagram.com/everwalk.app" target="_blank" rel="noopener">인스타그램</a> · <a href="#" id="a2Intro">홈 화면에 추가</a></p>
+  </div>
+</div>
+
+<div id="setup" class="screen hidden">
+  <div class="sheet" role="dialog" aria-label="프로필 만들기">
+    <div class="tabs" role="tablist">
+      <button role="tab" data-t="kind" aria-selected="true">종류</button>
+      <button role="tab" data-t="look" aria-selected="false">모습</button>
+      <button role="tab" data-t="coat" aria-selected="false">색·무늬</button>
+      <button role="tab" data-t="card" aria-selected="false">프로필</button>
+      <button role="tab" data-t="story" aria-selected="false">이야기</button>
+      <button role="tab" data-t="me" aria-selected="false">나</button>
+    </div>
+    <div class="scroll">
+      <section data-p="kind" class="field" style="gap:14px">
+        <div class="field"><span class="lab">우리 아이들 <span id="petCount"></span></span><div class="chips" id="petPick"></div><div class="row2"><button class="btn" id="petAdd" type="button">한 마리 더 등록</button><button class="btn" id="petDel" type="button">이 아이 빼기</button></div></div>
+        <div class="row2"><div class="field"><label for="petName">아이 이름</label><input id="petName" type="text" maxlength="10" autocomplete="off"></div><div class="field"><label for="nick">내 이름 (들판에서 보임)</label><input id="nick" type="text" maxlength="14" autocomplete="off"></div></div>
+        <div class="field"><span class="lab">아이가 나를 부르던 말</span><div class="chips" id="calls"></div><input id="callIn" type="text" maxlength="10" placeholder="목록에 없으면 직접 적기 (예: 내 이름)" autocomplete="off"><p class="hint">들판에서 아이가 이 말로 나를 부릅니다.</p></div>
+        <div class="field"><span class="lab">종류</span><div class="chips" id="species"></div></div>
+        <div class="field"><span class="lab">품종 <span id="bcount"></span></span><input id="bsearch" type="search" placeholder="품종 찾기" autocomplete="off"><div class="blist chips" id="breeds"></div></div>
+      </section>
+      <section data-p="look" class="field hidden" style="gap:14px">
+        <p class="hint">위의 아이를 손가락으로 돌려 볼 수 있습니다.</p>
+        <div id="sliders" class="field" style="gap:12px"></div>
+        <div class="field" id="earWrap"><span class="lab">귀 모양</span><div class="chips" id="ears"></div></div>
+        <div class="field" id="tailWrap"><span class="lab">꼬리</span><div class="chips" id="tails"></div></div>
+        <div class="field" id="extraWrap"><span class="lab">털 특징</span><div class="chips" id="extras"></div></div>
+        <div class="field"><span class="lab">머리 장식</span><div class="chips" id="acc"></div></div>
+        <div class="field" id="neckWrap"><span class="lab">목 장식</span><div class="chips" id="neck"></div></div>
+        <div class="field" id="collarWrap"><span class="lab">목 장식 색</span><div class="sw" id="collar"></div></div>
+        <div class="field" id="clothWrap"><span class="lab">옷</span><div class="chips" id="cloth"></div></div>
+        <div class="field" id="clothCWrap"><span class="lab">옷·모자 색</span><div class="sw" id="clothC"></div></div>
+      </section>
+      <section data-p="coat" class="field hidden" style="gap:14px">
+        <div class="field"><span class="lab">무늬</span><div class="chips" id="pats"></div></div>
+        <div class="field"><span class="lab">기본 털색</span><div class="sw" id="c1"></div></div>
+        <div class="field"><span class="lab" id="c2lab">밝은 부분 색</span><div class="sw" id="c2"></div></div>
+        <div class="field"><span class="lab" id="c3lab">무늬 색</span><div class="sw" id="c3"></div></div>
+        <div class="field" id="whiteWrap"><span class="lab">밝은 부분 위치</span><div class="chips" id="whites"></div></div>
+        <div class="field"><label for="pscale">무늬 크기</label><input id="pscale" type="range" min=".4" max="2.2" step=".02"></div>
+        <button class="btn" id="reseed" type="button">무늬 위치 다시 섞기</button>
+        <div class="field"><span class="lab">눈 색</span><div class="sw" id="eye"></div></div>
+        <div class="field"><span class="lab" id="noselab">코 색</span><div class="sw" id="nose"></div></div>
+      </section>
+      <section data-p="card" class="field hidden" style="gap:14px">
+        <p class="hint">들판에서 아이를 누르면 보이는 프로필입니다. 모두 적지 않아도 됩니다.</p>
+        <div class="field"><span class="lab">사진 (최대 1장 · 사람 얼굴이 나오지 않는 사진을 권합니다)</span>
+          <div class="photoRow"><img id="photoPrev" alt="" class="hidden"><label class="btn" for="photoIn">사진 고르기</label><input id="photoIn" type="file" accept="image/*" class="hidden"><button class="btn hidden" id="photoDel" type="button">사진 빼기</button></div></div>
+        <div class="field"><span class="lab">성별</span><div class="chips" id="gender"></div></div>
+        <div class="row2">
+          <div class="field"><label for="dBirth">태어난 날</label><input id="dBirth" type="date"></div>
+          <div class="field"><label for="dFamily">가족이 된 날</label><input id="dFamily" type="date"></div>
+        </div>
+        <div class="field"><label for="dRainbow">무지개 다리를 건넌 날</label><input id="dRainbow" type="date"></div>
+        <p class="hint hidden" id="ageLine" aria-live="polite"></p>
+        <div class="field"><span class="lab">성격 (여러 개 고를 수 있습니다)</span><div class="chips" id="persona"></div></div>
+        <div class="field"><label for="likes">좋아하던 것</label><input id="likes" type="text" maxlength="40" placeholder="예: 창가 햇볕, 공 놀이" autocomplete="off"></div>
+        <div class="field"><label for="intro">소개 한마디</label><textarea id="intro" maxlength="100" rows="3" placeholder="예: 산책을 제일 좋아하던 우리 집 막내입니다"></textarea></div>
+      </section>
+      <section data-p="me" class="field hidden" style="gap:14px">
+        <p class="hint">들판에서 걷는 내 모습입니다.</p>
+        <div class="field"><span class="lab">머리 모양</span><div class="chips" id="hair"></div></div>
+        <div class="field"><span class="lab">머리 색</span><div class="sw" id="hairC"></div></div>
+        <div class="field"><span class="lab">피부 색</span><div class="sw" id="skin"></div></div>
+        <div class="field"><span class="lab">윗옷 색</span><div class="sw" id="coat"></div></div>
+        <div class="field"><span class="lab">바지 색</span><div class="sw" id="pants"></div></div>
+        <div class="field"><span class="lab">모자</span><div class="chips" id="hatT"></div></div>
+        <div class="field"><span class="lab">모자 색</span><div class="sw" id="hatC"></div></div>
+        <div class="field"><span class="lab">안경</span><div class="chips" id="glasses"></div></div>
+        <div class="field"><span class="lab">윗옷 모양</span><div class="chips" id="topT"></div></div>
+        <div class="field"><span class="lab">목도리</span><div class="chips" id="scarf"></div></div>
+        <div class="field"><span class="lab">가방</span><div class="chips" id="bag"></div></div>
+        <div class="field"><span class="lab">신발 색</span><div class="sw" id="shoes"></div></div>
+        <div class="field"><span class="lab">수염</span><div class="chips" id="beard"></div></div>
+        <div class="field"><span class="lab">키</span><div class="chips" id="build"></div></div>
+      </section>
+      <section data-p="story" class="field hidden" style="gap:14px">
+        <div class="row2">
+          <div class="field"><label for="snack">좋아하던 간식</label><input id="snack" type="text" maxlength="12" placeholder="예: 고구마" autocomplete="off"></div>
+          <div class="field"><label for="play">좋아하던 놀이</label><input id="play" type="text" maxlength="12" placeholder="예: 공놀이" autocomplete="off"></div>
+        </div>
+        <p class="hint">적어 두면 들판에서 아이가 이 말들로 이야기합니다.</p>
+                <label class="pubRow"><input type="checkbox" id="isPublic"> <span><b>들판에 늘 보이기</b><br>저장한 아이들이 내가 없을 때도 들판을 뛰어다니고, 누구나 눌러서 프로필(이름·사진·소개)을 볼 수 있습니다. 끄면 바로 사라집니다.</span></label>
+        <p class="hint">저장하는 정보와 함께 걷기에서 보이는 정보는 <a href="/privacy.html" target="_blank" rel="noopener">정보 처리 안내</a>에 적어 두었습니다.</p>
+        <button class="btn hidden" id="delBtn" type="button">계정에 저장한 프로필 지우기</button>
+      </section>
+    </div>
+    <div class="foot"><button id="goWalk" class="btn primary" type="button">무지개 다리 건너기</button></div>
+  </div>
+</div>
+
+<div id="hud" class="screen hidden">
+  <div class="topbar">
+    <div class="left"><div class="pill" id="placePill"><i class="dot"></i>무지개 들판</div><button class="pill" id="warmPill" type="button" aria-label="온기와 모두의 하늘 보기" data-ds-new="2026-11-14"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 21s-7.5-4.6-9.5-9.2C1 8.3 3.2 5 6.6 5c2 0 3.6 1.1 4.4 2.6h2C13.8 6.1 15.4 5 17.4 5 20.8 5 23 8.3 21.5 11.8 19.5 16.4 12 21 12 21z"/></svg>온기 <b id="warmN">0</b></button><button class="pill" id="starPill" type="button" aria-label="놀이와 꾸미기 · 별조각" data-ds-new="2026-11-14"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4l-5.9 3.1 1.2-6.5L2.5 9.4l6.6-.9z"/></svg><b id="starN">0</b></button><div class="pill hidden" id="treatPill">찾은 간식 <b id="treatN">0</b>/<span id="treatT">5</span></div></div>
+    <div class="right">
+      <button class="pill" id="placeBtn" type="button" aria-label="다른 곳으로 가기 · 지금 이곳에 함께 있는 사람" data-ds-new="2026-11-14"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-6.5-5.6-6.5-10.5a6.5 6.5 0 0 1 13 0C18.5 15.4 12 21 12 21z"/><circle cx="12" cy="10.5" r="2.3"/></svg><span id="peopleN">1</span></button>
+      <button class="icon hidden" id="friendBtn" type="button" aria-label="친구와 공동 보호자"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.2"/><path d="M3 20c.8-3.4 3.2-5.2 6-5.2s5.2 1.8 6 5.2"/><path d="M16 4.6a3.2 3.2 0 0 1 0 6.3M18 14.9c1.6.7 2.6 2.4 3 5.1"/></svg><i id="friendDot" class="hidden"></i></button>
+      <button class="icon" id="sndBtn" aria-label="소리 켜기·끄기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10v4h4l5 4V6L8 10z"/><path id="sndWave" d="M16 9a4 4 0 0 1 0 6M18.5 6.5a8 8 0 0 1 0 11"/></svg></button>
+      <button class="icon" id="editBtn" aria-label="프로필 고치기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19 9l-4-4L4 16z"/></svg></button>
+    </div>
+  </div>
+  <div id="petSwitch" class="hidden"></div>
+  <div id="topLinks"><button class="icon" id="a2Btn" type="button" aria-label="홈 화면에 추가" data-ds-new="2026-11-14"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="4"/><path d="M12 8.5v7M8.5 12h7"/></svg></button><a class="icon" href="https://datasmith.co.kr/kr/" aria-label="DATASMITH 홈으로 가기"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg></a><a class="icon" href="https://www.instagram.com/everwalk.app" target="_blank" rel="noopener" aria-label="Everwalk 인스타그램 열기"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.3" cy="6.7" r=".6" fill="currentColor"/></svg></a></div>
+  <div class="pill hidden" id="tagPill"></div>
+  <div id="hint">왼쪽 원을 밀면 함께 걷습니다</div>
+  <div id="joy"><div id="knob"></div></div>
+  <div id="actions">
+    <button data-a="ball" aria-label="공 던지기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="8"/><path d="M5.5 8.5c3 1 3 6 0 7M18.5 8.5c-3 1-3 6 0 7"/></svg>공 던지기</button>
+    <button data-a="pet" aria-label="쓰다듬기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.5-7 10-7 10z"/></svg>쓰다듬기</button>
+    <button data-a="play" aria-label="함께 하기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="4" width="7" height="7" rx="2"/><rect x="13" y="4" width="7" height="7" rx="2"/><rect x="4" y="13" width="7" height="7" rx="2"/><rect x="13" y="13" width="7" height="7" rx="2"/></svg>함께 하기</button>
+    <button data-a="talk" aria-label="말 걸기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.4A8 8 0 1 1 21 12z"/></svg>말 걸기</button>
+  </div>
+</div>
+
+<div id="chat" class="hidden" role="dialog" aria-label="대화">
+  <div class="head"><span id="chatTitle">이야기하기</span><button id="chatClose" type="button">닫기</button></div>
+  <label class="shareAll" for="chatAll"><input type="checkbox" id="chatAll"><span>들판의 모두에게도 보이기</span></label>
+  <div id="chatLog"></div>
+  <div id="quick"></div>
+  <div class="r"><input id="chatIn" type="text" maxlength="80" placeholder="하고 싶은 말을 적어 주시길 바랍니다" autocomplete="off"><button class="btn primary" id="chatSend" type="button">보내기</button></div>
+  <button class="lantern" id="lanternBtn" type="button">방금 한 말을 등불로 하늘에 띄우기</button>
+</div>
+
+<div id="playSheet" class="hidden" role="dialog" aria-label="함께 하기">
+  <div class="head"><span id="playTitle">무엇을 함께 할까요?</span><button id="playClose" type="button">닫기</button></div>
+  <div id="playGrid"></div>
+  <div id="snackBox" class="hidden"><div class="lab">어떤 간식을 줄까요?</div><div class="chips" id="snackChips"></div></div>
+</div>
+<div id="tugUI" class="hidden"><div class="lab">터그 놀이 · 빠르게 눌러 당깁니다</div><div class="bar"><i id="tugFill"></i></div><button id="tugBtn" class="btn primary" type="button">당기기</button></div>
+<div id="dialog" class="hidden"><div class="box" role="dialog" aria-modal="true"><h3 id="dlgT"></h3><div id="dlgB"></div><div class="r" id="dlgR"></div></div></div>
+<div id="caption"></div>
+<div id="toast"></div>
+<div id="fade"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.119.0/dist/umd/supabase.js"></script>
+<script src="/datasmith-guard.js?v=c1678c5c50"></script>
+<script src="/datasmith-webpush.js?v=a699e10408" defer></script>
+<script src="/data.js?v=34f31e7eab"></script>
+<script type="module" src="/app.js?v=eb08117812"></script>
+<style>
+
+#ew-branch{position:fixed;inset:0;z-index:2147483000;display:none;padding:calc(64px + env(safe-area-inset-top)) 22px calc(26px + env(safe-area-inset-bottom));background:radial-gradient(60% 34% at 50% 58%,rgba(255,236,210,.75),rgba(255,236,210,0) 70%),linear-gradient(#34407e 0%,#6b6fb8 38%,#c79fc4 66%,#f3c9b6 100%);font-family:inherit;overflow:auto}
+#ew-branch.on{display:flex;justify-content:center}
+#ew-branch .in{width:min(440px,100%);min-height:100%;display:flex;flex-direction:column;text-align:left;color:#fff}
+#ew-branch .k{font-size:11px;font-weight:700;letter-spacing:.42em;color:rgba(255,255,255,.86)}
+#ew-branch h1{font-size:26px;line-height:1.42;margin:16px 0 0;font-weight:600;letter-spacing:-.02em;max-width:9.5em;word-break:keep-all}
+#ew-branch #ew-b1,#ew-branch #ew-b2{margin:auto 0;padding:28px 0}   
+#ew-branch .c{position:relative;display:block;width:100%;text-align:left;background:rgba(255,255,255,.17);color:#fff;border:1px solid rgba(255,255,255,.52);border-radius:20px;padding:19px 20px 19px 86px;margin:0 0 12px;min-height:88px;font:inherit;cursor:pointer;text-decoration:none;-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);box-shadow:0 10px 30px rgba(40,30,80,.18);transition:transform .15s,background .15s}
+#ew-branch .c .v{position:absolute;left:18px;top:50%;width:54px;height:54px;margin-top:-27px;padding:4px;box-sizing:border-box;border-radius:16px;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.45)}
+#ew-branch .c:active{transform:scale(.985);background:rgba(255,255,255,.26)}
+#ew-branch .c b{display:block;font-size:17px;line-height:1.35;font-weight:600;letter-spacing:-.01em;padding-right:64px}
+#ew-branch .c span{display:block;font-size:13px;line-height:1.55;word-break:keep-all;color:rgba(255,255,255,.86);margin-top:6px}
+#ew-branch .c i{position:absolute;right:18px;top:19px;font-style:normal;font-size:10px;font-weight:700;letter-spacing:.18em;color:#4a4f93;background:rgba(255,255,255,.92);border-radius:999px;padding:4px 9px}
+#ew-branch .c:focus-visible{outline:2px solid #fff;outline-offset:3px}
+#ew-branch .f{font-size:11.5px;line-height:1.6;word-break:keep-all;color:rgba(255,255,255,.8);margin-top:0;text-align:center}
+#ew-branch .f a{color:inherit}
+@keyframes ewbr{0%{opacity:0;transform:translateY(12px)}100%{opacity:1;transform:none}}
+#ew-branch.on .k,#ew-branch.on h1,#ew-branch.on .c,#ew-branch.on .f{animation:ewbr .5s both}#ew-branch.on h1{animation-delay:.06s}#ew-branch.on .c:nth-child(1){animation-delay:.16s}#ew-branch.on .c:nth-child(2){animation-delay:.24s}#ew-branch.on .c:nth-child(3){animation-delay:.32s}#ew-branch.on .f{animation-delay:.4s}
+@media (prefers-reduced-motion:reduce){#ew-branch.on .k,#ew-branch.on h1,#ew-branch.on .c,#ew-branch.on .f{animation:none}}
+</style>
+<div id="ew-branch" role="dialog" aria-modal="true" aria-label="갈 곳 고르기">
+  <div class="in">
+    <div class="k">EVERWALK</div>
+    <h1>오늘은 어디로 가시겠습니까?</h1>
+    <div id="ew-b1">
+    <button type="button" class="c" id="ew-branch-star"><svg class="v" viewBox="0 0 48 48" aria-hidden="true" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M30 7l2.6 5.6 6 .8-4.4 4.2 1.1 6-5.3-2.9-5.3 2.9 1.1-6-4.4-4.2 6-.8z" fill="rgba(255,255,255,.9)" stroke="none"/><ellipse cx="17" cy="36" rx="5.4" ry="4.4"/><circle cx="9.5" cy="29" r="2"/><circle cx="14" cy="25.5" r="2"/><circle cx="20" cy="25.5" r="2"/><circle cx="24.5" cy="29" r="2"/></svg><b>별이 된 아이와 걷기</b><span>조용한 들판을 다시 나란히 걷거나, 별을 모으며 함께 달립니다.</span></button>
+    <a class="c" href="/care/"><svg class="v" viewBox="0 0 48 48" aria-hidden="true" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="11" y="9" width="26" height="32" rx="5"/><path d="M19 9v-1.5a2 2 0 012-2h6a2 2 0 012 2V9"/><path d="M24 31.5c-5-3.6-7-6.200-7-8.800a3.700 3.700 0 017-1.6 3.700 3.700 0 017 1.6c0 2.6-2 5.200-7 8.800z" fill="rgba(255,255,255,.9)" stroke="none"/></svg><b>곁에 있는 아이 돌보기</b><span>산책 · 식사 · 접종 · 체중 · 투약을 한곳에서 기록합니다.</span><i>BETA</i></a>
+    </div>
+    <div id="ew-b2" hidden>
+    <button type="button" class="c" id="ew-branch-walk"><svg class="v" viewBox="0 0 48 48" aria-hidden="true" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 30a17 17 0 0134 0"/><path d="M12.5 30a11.5 11.5 0 0123 0" opacity=".75"/><path d="M18 30a6 6 0 0112 0" opacity=".5"/><path d="M4 38c6-4.5 12-4.5 20-1.5s14 2 20-1.5"/><circle cx="24" cy="41" r="1.6" fill="#fff" stroke="none"/></svg><b>들판에서 함께 걷기</b><span>조용한 들판에서 아이와 나란히 걷고, 다른 보호자도 만납니다.</span></button>
+    <a class="c" href="/tailstar/"><svg class="v" viewBox="0 0 48 48" aria-hidden="true" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M31 12l3 6.3 6.800.9-5 4.800 1.3 6.800-6.100-3.3-6.100 3.3 1.3-6.800-5-4.800 6.800-.9z" fill="rgba(255,255,255,.9)" stroke="none"/><path d="M6 20h10M4 27h13M8 34h11"/></svg><b>추억의 별 모으며 달리기</b><span>첫 만남의 숲을 달리며 추억의 별을 모아 만남의 문을 엽니다.</span><i>NEW</i></a>
+    <button type="button" class="c" id="ew-branch-back" style="background:rgba(255,255,255,.55);padding:13px 20px;min-height:0"><b style="font-size:15px">뒤로</b></button>
+    </div>
+    <div class="f">Everwalk Care 는 BETA 기간 동안 무료이며, 바뀔 수 있습니다. <a href="/terms.html">이용약관</a> · <a href="/privacy-policy.html">개인정보 처리방침</a></div>
+  </div>
+</div>
+<script>!function(){var e=document.getElementById("ew-branch");try{var t=new URLSearchParams(location.search);t.has("rec")||t.has("load")||t.has("save")||/^#(move=|access_token=|error)/.test(location.hash)||"walk"===sessionStorage.getItem("ew-branch")||e.classList.add("on")}catch(e){}document.addEventListener("click",function(t){if(t.target&&t.target.closest?t.target.closest("[data-ew-branch]"):null){t.preventDefault();try{sessionStorage.removeItem("ew-branch")}catch(e){}e.classList.add("on")}});var n=document.getElementById("ew-b1"),c=document.getElementById("ew-b2"),a=e.querySelector("h1"),o=a.textContent;document.getElementById("ew-branch-star").onclick=function(){n.hidden=!0,c.hidden=!1,a.textContent="어떻게 함께 시간을 보내시겠습니까?"},document.getElementById("ew-branch-back").onclick=function(){c.hidden=!0,n.hidden=!1,a.textContent=o},document.getElementById("ew-branch-walk").onclick=function(){try{sessionStorage.setItem("ew-branch","walk")}catch(e){}e.classList.remove("on")}}();</script>
+<script src="/ew-traffic.js?v=1db2fd724a" defer></script>
+<script src="/ew-engage.js?v=b531775916" defer></script>
+</body>
+</html>

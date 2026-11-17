@@ -1,0 +1,53 @@
+
+:root{
+  --green:var(--ds-accent-ink);
+  --green-2:var(--ds-accent);
+  --paper:var(--ds-bg);
+  --card:var(--ds-surface);
+  --line:var(--ds-line);
+  --line-2:var(--ds-line-strong);
+  --ink:var(--ds-ink);
+  --ink-2:var(--ds-ink-2);
+  --ink-3:var(--ds-ink-3);
+  --ink-4:var(--ds-ink-4);
+  --sh:var(--ds-shadow-sm);
+  --ds-cbar-h:var(--ds-topbar-h);
+  --mx-gutter:var(--ds-gutter);
+  --mx-card-x:var(--ds-s-4);
+  --mx-card-y:var(--ds-s-4);
+  --mx-gap:var(--ds-s-3);
+}
+
+.topbar{top:var(--ds-topbar-h)!important}
+.topbar-in{height:auto;min-height:var(--ds-topbar-h);gap:var(--ds-s-2)}
+.rail{top:var(--ds-topbar-h)!important;height:calc(100svh - var(--ds-topbar-h))!important;width:var(--ds-rail-w)!important}
+.tb-title{font-size:var(--ds-fs-card);font-weight:var(--ds-fw-semibold);letter-spacing:-.01em}
+
+.card,.panel{border-radius:var(--ds-r-lg);border-color:var(--ds-line);box-shadow:var(--ds-shadow-xs)}
+.btn{min-height:var(--ds-btn-h);border-radius:var(--ds-r-sm);font-size:var(--ds-fs-button);font-weight:var(--ds-fw-semibold);border-color:var(--ds-line-strong)}
+.btn-primary,.btn.primary{background:var(--ds-accent-ink);border-color:var(--ds-accent-ink);color:var(--ds-accent-on)}
+input,select,textarea{min-height:var(--ds-input-h);border-radius:var(--ds-r-sm);font-size:var(--ds-input-fs)}
+input:focus,select:focus,textarea:focus{border-color:var(--ds-accent);box-shadow:0 0 0 3px var(--ds-accent-soft)}
+
+.mobile-bar{display:none!important}
+.fab{bottom:calc(20px + env(safe-area-inset-bottom))!important;right:var(--ds-s-4)!important;min-height:52px;border-radius:var(--ds-r-pill);box-shadow:var(--ds-shadow-md);z-index:65}
+@media (max-width:767px){
+  .wrap{padding-left:var(--ds-gutter);padding-right:var(--ds-gutter)}
+  .main{padding-bottom:calc(96px + env(safe-area-inset-bottom))}
+  .modal,.sheet{border-radius:0}
+  .sheet{border-radius:var(--ds-r-lg) var(--ds-r-lg) 0 0}
+}
+
+
+#modal #modalIn{overflow:visible}
+#modalIn .m-foot{position:sticky;bottom:0;z-index:2;background:var(--surface,#fff);border-top:1px solid var(--line,#e6e8e6)}
+
+
+.dash-grid{column-gap:28px;row-gap:28px}
+.card + .card,.dash-grid > div > .card + .card{margin-top:20px}
+.dash-grid > div > .card:not(:last-child){margin-bottom:20px}
+.sec-head{margin-top:40px;margin-bottom:16px}
+.card + .alert,.alert + .card,.card + .stat4,.stat4 + .card{margin-top:20px}
+@media (max-width:640px){.card + .card{margin-top:16px}.sec-head{margin-top:32px}.dash-grid{row-gap:20px}}
+
+.fab{display:none!important}   
