@@ -1,7 +1,7 @@
 {
-  "name": "Rainbow Meadow by Everwalk",
+  "name": "Everwalk",
   "short_name": "Everwalk",
-  "description": "무지개 다리 건넌 아이와 다시 함께 걷는 곳",
+  "description": "곁에 있는 아이의 오늘을 기록하고, 별이 된 아이와 다시 걷는 곳",
   "id": "/",
   "start_url": "/",
   "scope": "/",
