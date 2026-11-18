@@ -1,0 +1,4 @@
+© 2026 DATASMITH · everwalk.app · All rights reserved. Unauthorized copying, redistribution or hosting of these files is prohibited.
+
+This repository contains the built files of https://everwalk.app. No license is granted to copy, modify, redistribute or host them elsewhere.
+이 저장소는 https://everwalk.app 의 완성된 파일입니다. 복사 · 수정 · 다시 배포하거나 다른 곳에 올리는 것을 허락하지 않습니다.

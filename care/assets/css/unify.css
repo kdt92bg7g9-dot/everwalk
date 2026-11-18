@@ -1,3 +1,4 @@
+/*! © 2026 DATASMITH · everwalk.app · All rights reserved. Unauthorized copying, redistribution or hosting of these files is prohibited. */
 
 :root{--font:'Pretendard Variable',Pretendard,'Apple SD Gothic Neo','Malgun Gothic',system-ui,sans-serif}
 body,button,input,select,textarea,.topbar,.rail,.mobile-bar,.fab,.modal,.sheet,.toast{font-family:var(--font)}
