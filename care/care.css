@@ -60,3 +60,11 @@ input[type=date]::-webkit-date-and-time-value,input[type=time]::-webkit-date-and
 .field,.grid2>*{min-width:0}
 .field .input,.field input,.field select,.field textarea{max-width:100%;box-sizing:border-box}
 .field input[type=number],.field input.input{width:100%!important}
+
+
+#ew-bar #ew-ds{border:1px solid rgba(255,255,255,.6)!important;border-radius:999px;min-height:34px;padding:0 12px}
+#ew-bar #ew-ds .l{display:none}
+@media (min-width:640px){#ew-bar #ew-ds .l{display:inline}}
+@media (max-width:480px){#ew-bar #ew-ds{padding:0 9px}}
+@media (max-width:350px){#ew-bar #ew-ds{display:none}}
+@media (max-width:380px){#ew-bar a,#ew-bar button{font-size:11px;padding:0 5px}#ew-bar #ew-ds{padding:0 7px}#ew-bar #ew-out{padding:0 8px}#ew-bar .ew-sp + a{flex:none;overflow:visible}#ew-bar .ew-brand{font-size:13px}}
