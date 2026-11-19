@@ -2,7 +2,7 @@
 
 .mobile-bar{display:none!important}
 .rail{background:#FFFFFF;box-shadow:none}
-body.pet-drawer-open .rail{box-shadow:0 0 40px rgba(15,74,63,.22)}
+body.pet-drawer-open .rail{box-shadow:0 0 40px rgba(168,67,47,.22)}
 .main{padding-bottom:32px}
 
 
@@ -19,8 +19,8 @@ body.pet-drawer-open .rail{box-shadow:0 0 40px rgba(15,74,63,.22)}
 
 
 .topbar .tb-right{gap:10px}
-.topbar .tb-btn.tb-primary{height:34px;padding:0 14px 0 12px;border-radius:999px;border:0;background:var(--green,#0F4A3F);color:#fff;font-weight:600;gap:7px;box-shadow:0 2px 8px -2px rgba(15,74,63,.45)}
-.topbar .tb-btn.tb-primary:hover{background:var(--green-2,#17604F);color:#fff;border:0}
+.topbar .tb-btn.tb-primary{height:34px;padding:0 14px 0 12px;border-radius:999px;border:0;background:var(--green,#A8432F);color:#fff;font-weight:600;gap:7px;box-shadow:0 2px 8px -2px rgba(168,67,47,.45)}
+.topbar .tb-btn.tb-primary:hover{background:var(--green-2,#B9553F);color:#fff;border:0}
 .topbar .tb-btn.tb-primary svg{flex:0 0 auto}
 .topbar .tb-btn.tb-quiet{border:0;background:transparent;padding:0 6px;height:34px;color:var(--ink-3,#6a756f);font-weight:500}
 .topbar .tb-btn.tb-quiet:hover{color:var(--ink,#101917);background:rgba(16,25,23,.05);border:0}
