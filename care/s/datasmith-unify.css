@@ -87,7 +87,7 @@ html[data-ds-service] table td,html[data-ds-service] table th{border-color:var(-
 html[data-ds-service="pet"] .wrap,html[data-ds-service="pet"] .topbar-in,
 html[data-ds-service="cv"] main.main,html[data-ds-service="asset"] main{max-width:880px!important;margin-left:auto!important;margin-right:auto!important}
 html[data-ds-service="pet"] .wrap,html[data-ds-service="cv"] main.main,html[data-ds-service="asset"] main{padding-left:16px!important;padding-right:16px!important}
-html[data-ds-service] .ds-tabs,html[data-ds-service] .ds-crumb,html[data-ds-service] .ds-hub{max-width:848px;width:calc(100% - 32px);margin-left:auto;margin-right:auto}
+html[data-ds-service] .ds-tabs,html[data-ds-service] .ds-crumb,html[data-ds-service] .ds-chiprow,html[data-ds-service] .ds-hub{max-width:848px;width:calc(100% - 32px);margin-left:auto;margin-right:auto}
 html[data-ds-service="cv"] main.main>.ds-tabs,html[data-ds-service="cv"] main.main>.ds-crumb,html[data-ds-service="cv"] main.main>.ds-hub{width:auto;max-width:none}
 html[data-ds-service] .ds-tabs{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:2px;padding:4px;background:var(--u-surf);border:1px solid var(--u-hair);border-radius:var(--u-rc);margin-top:16px;margin-bottom:14px}
 html[data-ds-service] .ds-tabs button{min-height:42px;padding:0 1px;border:0;background:none;border-radius:10px;color:var(--u-mid);font:inherit;font-size:12.5px;cursor:pointer;white-space:nowrap}
@@ -365,6 +365,9 @@ html[data-ds-service="cv"][data-ds-theme="dark"] .itemrow:active{background:var(
 
 .ds-chiprow{display:flex;gap:8px;overflow-x:auto;padding:14px 2px 6px;margin:0 0 4px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
 .ds-chiprow::-webkit-scrollbar{display:none}
+
+.ds-chiprow button:first-child{margin-left:auto}.ds-chiprow button:last-child{margin-right:auto}
+.ds-chiprow button{display:inline-flex;align-items:center;justify-content:center}
 .ds-chiprow button{flex:none;min-height:42px;padding:0 18px;border-radius:999px;border:1.5px solid var(--u-hair2);background:var(--u-surf);color:var(--u-ink);font:inherit;font-size:15px;font-weight:600;white-space:nowrap;cursor:pointer;transition:background .15s,color .15s,border-color .15s}
 .ds-chiprow button.on{background:var(--u-ink);color:var(--u-surf);border-color:var(--u-ink);font-weight:800}
 .ds-chiprow button:focus-visible{outline:2px solid var(--u-acc);outline-offset:2px}
