@@ -361,3 +361,22 @@ html[data-ds-service="cv"][data-ds-theme="dark"] .irtable td.ir-v{color:var(--in
 html[data-ds-service="cv"][data-ds-theme="dark"] .pv-bar__b{background:var(--u-surf);color:var(--u-ink)}
 html[data-ds-service="cv"][data-ds-theme="dark"] .itemrow:active{background:var(--u-bg)}
 
+
+
+.ds-chiprow{display:flex;gap:8px;overflow-x:auto;padding:14px 2px 6px;margin:0 0 4px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.ds-chiprow::-webkit-scrollbar{display:none}
+.ds-chiprow button{flex:none;min-height:42px;padding:0 18px;border-radius:999px;border:1.5px solid var(--u-hair2);background:var(--u-surf);color:var(--u-ink);font:inherit;font-size:15px;font-weight:600;white-space:nowrap;cursor:pointer;transition:background .15s,color .15s,border-color .15s}
+.ds-chiprow button.on{background:var(--u-ink);color:var(--u-surf);border-color:var(--u-ink);font-weight:800}
+.ds-chiprow button:focus-visible{outline:2px solid var(--u-acc);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){.ds-chiprow button{transition:none}}
+
+
+html[data-ds-service="pet"] body{font-size:15px;line-height:1.55}
+html[data-ds-service="pet"] .ds-tabs button{font-size:15px;min-height:44px}
+html[data-ds-service="pet"] .card,html[data-ds-service="pet"] .ds-hubc,html[data-ds-service="pet"] .h-card,html[data-ds-service="pet"] .panel{background:var(--u-surf)!important;border:1px solid var(--u-hair)!important;border-radius:18px!important;box-shadow:none!important}
+html[data-ds-service="pet"] .h-card .h-cell{background:var(--u-surf)!important;border:1px solid var(--u-hair)!important;border-radius:18px!important;padding:16px!important;box-shadow:none!important}
+html[data-ds-service="pet"] .h-card .h-cell .k{font-size:13px!important;color:var(--u-ink2)!important}
+html[data-ds-service="pet"] .h-card .h-cell .v{font-size:16px!important;font-weight:700!important}
+html[data-ds-service="pet"] .sec-head h2{font-size:15px!important;font-weight:800!important}
+
+html .ds-tabs button:focus:not(:focus-visible),html .tabs button:focus:not(:focus-visible),html .ds-chiprow button:focus:not(:focus-visible){outline:none}
